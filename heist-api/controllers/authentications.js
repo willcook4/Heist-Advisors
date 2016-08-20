@@ -10,7 +10,7 @@ function register(req, res) {
     var token = jwt.sign(payload, secret, { expiresIn: 60*60*24 });
 
     return res.status(200).json({
-      message: "Thanks for registering!",
+      message: "Registration succesful, let the heists begin!",
       token: token
     });
   });
