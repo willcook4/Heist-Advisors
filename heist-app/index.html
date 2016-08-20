@@ -3,12 +3,29 @@
 <head>
   <title>Heist App</title>
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVPhZMMsvxL8NpeAYOzBuO7SqHpXfX_04&libraries=places"></script>
+  <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="/bower_components/underscore/underscore-min.js"></script>
   <script type="text/javascript" src="/js/app.js"></script>
-  <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <link rel="stylesheet" type="text/css" href="../css/reset.css">
+  <link rel="stylesheet" type="text/css" href="../css/style.css">
 </head>
 <body>
-  <main>
-  
+<ul class="navbar">
+  <li>
+    <a href="" data-template="register" class="logged-out">Register</a>
+  </li>
+  <li>
+    <a href="" data-template="login" class="logged-out">Login</a>
+  </li>
+  <li>
+    <a href="" data-template="home">HomePage</a>
+  </li>
+  <li>
+    <a href="" class="logout logged-in">Logout</a>
+  </li>
+</ul>
+<main class="container">
+
   <h1>JavaScript disabled!</h1>
   <p>You need to enable JavaScript to view the content of this website</p>
   

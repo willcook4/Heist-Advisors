@@ -1,4 +1,4 @@
-.background {
+.background{
   height: 100vh;
   width: 100vw;
   background-color: red;
@@ -8,16 +8,16 @@
   -moz-filter: blur(3px);
   -o-filter: blur(3px);
   -ms-filter: blur(3px);
-  filter: blur(3px); }
-
-.shroud {
+  filter: blur(3px);
+}
+.shroud{
   height: 100vh;
   width: 100vw;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0,0,0,0.6);
   position: absolute;
-  z-index: 2; }
-
-.title {
+  z-index: 2;
+}
+.title{
   position: absolute;
   z-index: 3;
   width: 600px;
@@ -26,18 +26,21 @@
   left: 50%;
   top: 25%;
   text-align: center;
-  font-size: 100px; }
-
-.hidden {
-  display: none; }
+  font-size: 100px;
+}
+.hidden{
+  display: none;
+}
 
 html, body, main {
   height: 100%;
   margin: 0;
-  padding: 0; }
+  padding: 0;
+}
 
 #map {
-  height: 100%; }
+  height: 100%;
+}
 
 #floating-panel {
   position: absolute;
@@ -50,6 +53,5 @@ html, body, main {
   text-align: center;
   font-family: 'Roboto','sans-serif';
   line-height: 30px;
-  padding-left: 10px; }
-
-/*# sourceMappingURL=style.css.map */
+  padding-left: 10px;
+}

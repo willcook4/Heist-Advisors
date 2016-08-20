@@ -1,130 +1,98 @@
-var mapCenterLatLng;
-var map;
+var HeistApp = HeistApp || {}
 
-function initMap() {
-  // Create a default landing map
-  map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 13,
-    center: {lat: 51.515081, lng: -0.071966}
-  });
-  var geocoder = new google.maps.Geocoder();
+HeistApp.API_URL = "http://localhost:3000/api";
 
-  document.getElementById('submit').addEventListener('click', function() {
-    geocodeAddress(geocoder, map);
-    // Once map is loaded...
-    google.maps.event.addListenerOnce(map, 'idle', function(){
-      // console.log("Map is loaded fully");
-      getMapMarkers();
-    });    
-  })
+HeistApp.setRequestHeader = function(jqXHR) {
+  var token = window.localStorage.getItem("token");
+  if(!!token) return jqXHR.setRequestHeader('Authorization', 'Bearer ' + token);
 }
 
-// Markers for banks etc
-function getMapMarkers() {
-    // banks
-    var request = {
-      location: { lat: map.getCenter().lat(), lng: map.getCenter().lng() },
-      radius: '8000',
-      type: 'bank'
-    };
-
-    // jewelry_store
-    var request2 = {
-      location: { lat: map.getCenter().lat(), lng: map.getCenter().lng() },
-      radius: '8000',
-      type: 'jewelry_store'
-    };
-
-    // Airports
-    var request3 = {
-      location: { lat: map.getCenter().lat(), lng: map.getCenter().lng() },
-      radius: '15000',
-      type: 'airport'
-    };
-
-    var request4 = {
-      location: { lat: map.getCenter().lat(), lng: map.getCenter().lng() },
-      radius: '8000',
-      type: 'police'
-    };
-
-    service = new google.maps.places.PlacesService(map);
-    service.textSearch(request, mapMarkers);
-    service.textSearch(request2, mapMarkers);
-    service.textSearch(request3, mapMarkers);
-    service.textSearch(request4, mapMarkers);
-}
-
-function geocodeAddress(geocoder, resultsMap) {
-  var address = document.getElementById('address').value;
-  geocoder.geocode({'address': address}, function(results, status) {
-    if (status === 'OK') {
-      resultsMap.setCenter(results[0].geometry.location);
-      var marker = new google.maps.Marker({
-        map: resultsMap,
-        position: results[0].geometry.location
-      });
-
-    } else {
-      alert('Geocode was not successful for the following reason: ' + status);
-    }
-    // mapCenterLatLng = results[0].geometry.location;
+HeistApp.getTemplate = function(template, data) {
+  return $.get('/templates/' + template + '.html').done(function(templateHtml) {
+    var html = _.template(templateHtml)(data);
+    HeistApp.$main.html(html);
   });
 }
 
-
-function mapMarkers(results, status) {
+HeistApp.getGame = function() {
+  event.preventDefault();
+  HeistApp.getTemplate("game");
   
-  if (status == google.maps.places.PlacesServiceStatus.OK) {
-    for (var i = 0; i < results.length; i++) {
-      var place = results[i];
-      
-      if (place.types.includes("bank")) {
-        createMarker(results[i], "bank");
-
-      } else if(place.types.includes("jewelry_store")) {
-        createMarker(results[i], "jewelry_store");
-      
-      } else if(place.types.includes("airport")) {
-        createMarker(results[i], "airport");
-      
-      } else if(place.types.includes("police")) {
-        createMarker(results[i], 'police');
-        console.log('police: ' + results[i].name); 
-      
-      } else {
-      }
-    } 
-  }
+ 
 }
 
-function createMarker(searchResult, type) {
+HeistApp.handleForm = function() {
+  event.preventDefault();
 
-  // var color = type === "bank" ? "yellow" : 'jewelry_store' ? "red" : 'airport' ? "blue" }
-  var color;
-  // Marker Color Selection
-  // bank = yellow, jewelry_store = red, police = green, airport = blue
-  if(type === 'bank') {
-    color = 'yellow';
+  $(this).find('button').prop('disabled', true);
+
+  var data = $(this).serialize();
+  var method = $(this).attr("method");
+  var url = HeistApp.API_URL + $(this).attr("action");
+
+  return $.ajax({
+    url: url,
+    method: method,
+    data: data,
+    beforeSend: HeistApp.setRequestHeader
+  })
+  .done(function(data) {
+    if(!!data.token) {
+      window.localStorage.setItem("token", data.token);
+    }
+    HeistApp.getGame();
+    HeistApp.updateUI();
+  })
+  .fail(HeistApp.handleFormErrors);
+}
+
+HeistApp.handleFormErrors = function(jqXHR) {
+  console.log(jqXHR);
+  var $form = $("form");
+  for(field in jqXHR.responseJSON) {
+    $form.find("input[name=" + field + "]").parents('.form-group').addClass('has-error');
   }
-  else if (type === 'jewelry_store'){
-    color = 'red';
-  } else if (type === 'police') {
-    color = 'green';
+  $form.find('button').removeAttr('disabled');
+}
+
+HeistApp.loadPage = function() {
+  event.preventDefault();
+  HeistApp.getTemplate($(this).data('template'));
+}
+
+HeistApp.logout = function() {
+  event.preventDefault();
+  window.localStorage.clear();
+  HeistApp.updateUI();
+}
+
+HeistApp.updateUI = function() {
+  var loggedIn = !!window.localStorage.getItem("token");
+
+  if(loggedIn) {
+    $('.logged-in').removeClass("hidden");
+    $('.logged-out').addClass("hidden");
   } else {
-    // airport
-    color = 'blue';
+    $('.logged-in').addClass("hidden");
+    $('.logged-out').removeClass("hidden");
   }
-
-  var marker = new google.maps.Marker({
-    position: searchResult.geometry.location,
-    map: map,
-    // animation: google.maps.Animation.BOUNCE,
-    icon: "http://maps.google.com/mapfiles/ms/icons/" + color + "-dot.png"
-  });
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-  console.log("js loaded");
-  initMap();
-});
+HeistApp.initEventHandlers = function() {
+  this.$main = $("main");
+  this.$main.on("submit", "form", this.handleForm);
+  $(".navbar a").not(".logout").on('click', this.loadPage);
+  $(".navbar a.logout").on('click', this.logout);
+  this.$main.on("focus", "form input", function() {
+    $(this).parents('.form-group').removeClass('has-error');
+  });
+
+}
+
+HeistApp.init = function() {
+  this.initEventHandlers();
+  this.updateUI();
+}.bind(HeistApp);
+
+$(HeistApp.init);
+
