@@ -2,6 +2,11 @@ var HeistApp = HeistApp || {}
 
 HeistApp.API_URL = "http://localhost:3000/api";
 
+HeistApp.setRequestHeader = function(jqXHR) {
+  var token = window.localStorage.getItem("token");
+  if(!!token) return jqXHR.setRequestHeader('Authorization', 'Bearer ' + token);
+}
+
 HeistApp.getTemplate = function(template, data) {
   return $.get('/templates/' + template + '.html').done(function(templateHtml) {
     var html = _.template(templateHtml)(data);
@@ -9,7 +14,7 @@ HeistApp.getTemplate = function(template, data) {
   });
 }
 
-HeistApp.getHome = function() {
+HeistApp.getGame = function() {
   event.preventDefault();
   HeistApp.getTemplate("game");
 }
@@ -26,9 +31,16 @@ HeistApp.handleForm = function() {
   return $.ajax({
     url: url,
     method: method,
-    data: data
+    data: data,
+    beforeSend: HeistApp.setRequestHeader
   })
-  .done(HeistApp.getHome)
+  .done(function(data) {
+    if(!!data.token) {
+      window.localStorage.setItem("token", data.token);
+    }
+
+    HeistApp.getGame();
+  })
   .fail(HeistApp.handleFormErrors);
 }
 
@@ -46,17 +58,39 @@ HeistApp.loadPage = function() {
   HeistApp.getTemplate($(this).data('template'));
 }
 
+HeistApp.logout = function() {
+  event.preventDefault();
+  window.localStorage.clear();
+  ShoeApp.updateUI();
+}
+
+HeistApp.updateUI = function() {
+  var loggedIn = !!window.localStorage.getItem("token");
+
+  if(loggedIn) {
+    $('.logged-in').removeClass("hidden");
+    $('.logged-out').addClass("hidden");
+  } else {
+    $('.logged-in').addClass("hidden");
+    $('.logged-out').removeClass("hidden");
+  }
+}
+
 HeistApp.initEventHandlers = function() {
   this.$main = $("main");
   this.$main.on("submit", "form", this.handleForm);
+  $(".navbar a").not(".logout").on('click', this.loadPage);
+  $(".navbar-nav a.logout").on('click', this.logout);
   $(".navbar a").on('click', this.loadPage);
   this.$main.on("focus", "form input", function() {
     $(this).parents('.form-group').removeClass('has-error');
   });
+
 }
 
 HeistApp.init = function() {
   this.initEventHandlers();
+  this.updateUI();
 }.bind(HeistApp);
 
 $(HeistApp.init);
