@@ -38,8 +38,8 @@ HeistApp.handleForm = function() {
     if(!!data.token) {
       window.localStorage.setItem("token", data.token);
     }
-
     HeistApp.getGame();
+    HeistApp.updateUI();
   })
   .fail(HeistApp.handleFormErrors);
 }
@@ -61,7 +61,7 @@ HeistApp.loadPage = function() {
 HeistApp.logout = function() {
   event.preventDefault();
   window.localStorage.clear();
-  ShoeApp.updateUI();
+  HeistApp.updateUI();
 }
 
 HeistApp.updateUI = function() {
@@ -80,8 +80,7 @@ HeistApp.initEventHandlers = function() {
   this.$main = $("main");
   this.$main.on("submit", "form", this.handleForm);
   $(".navbar a").not(".logout").on('click', this.loadPage);
-  $(".navbar-nav a.logout").on('click', this.logout);
-  $(".navbar a").on('click', this.loadPage);
+  $(".navbar a.logout").on('click', this.logout);
   this.$main.on("focus", "form input", function() {
     $(this).parents('.form-group').removeClass('has-error');
   });
