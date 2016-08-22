@@ -17,8 +17,11 @@ HeistApp.getTemplate = function(template, data) {
 HeistApp.getGame = function() {
   event.preventDefault();
   HeistApp.getTemplate("game");
-  
- 
+}
+
+HeistApp.getHome = function() {
+  event.preventDefault();
+  HeistApp.getTemplate("home");
 }
 
 HeistApp.handleForm = function() {
@@ -72,9 +75,11 @@ HeistApp.updateUI = function() {
   if(loggedIn) {
     $('.logged-in').removeClass("hidden");
     $('.logged-out').addClass("hidden");
+    HeistApp.getTemplate("game");
   } else {
     $('.logged-in').addClass("hidden");
     $('.logged-out').removeClass("hidden");
+    HeistApp.getTemplate("home");
   }
 }
 
