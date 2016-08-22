@@ -214,8 +214,6 @@ function createMarker(searchResult, type) {
   marker.addListener('click', toggleBounce);
   return marker;
 
-}
-
   function toggleBounce() {
     if (marker.getAnimation() !== null) {
       marker.setAnimation(null);
@@ -223,6 +221,10 @@ function createMarker(searchResult, type) {
       marker.setAnimation(google.maps.Animation.BOUNCE);
     }
   }
+
+}
+
+  
 
 
 }
