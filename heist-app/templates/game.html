@@ -16,6 +16,7 @@ var startLocation;
 var endLocation;
 var mapCenterLatLng;
 var map;
+var marker;
 
 var jewelryStores = [];
 var banks = [];
@@ -205,12 +206,23 @@ function createMarker(searchResult, type) {
   var marker = new google.maps.Marker({
     position: searchResult.geometry.location,
     map: map,
-    // animation: google.maps.Animation.BOUNCE,
+    animation: google.maps.Animation.DROP,
     icon: "http://maps.google.com/mapfiles/ms/icons/" + color + "-dot.png"
   });
+  
   markerListener(marker);
+  marker.addListener('click', toggleBounce);
   return marker;
+
 }
+
+  function toggleBounce() {
+    if (marker.getAnimation() !== null) {
+      marker.setAnimation(null);
+    } else {
+      marker.setAnimation(google.maps.Animation.BOUNCE);
+    }
+  }
 
 
 }
