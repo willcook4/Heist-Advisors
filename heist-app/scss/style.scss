@@ -2,6 +2,15 @@ body{
   background-color: #020202;
 }
 
+form{
+  background-color:red;
+  width: 60%;
+  position:absolute;
+  top: 50px;
+  left: 50%;
+  margin-left: -30%;
+}
+
 .background{
   height: 100vh;
   width: 100vw;
@@ -125,15 +134,16 @@ form{
   button{
     height: 37px;
     line-height: 0;
-    margin: 20px 0 0 0;
+    margin: 20px 0;
   }
 }
 
 .center-form{
-  left: 25%;
   margin: 20px 0 0 0; 
-  @media screen and (max-width: 639px) {
-    left: 0;
+  @media screen and (min-width: 740px) {
+    left: 50%;
+    width:420px;
+    margin: 20px 0 0 -210px;
   }
 }
 
@@ -171,5 +181,10 @@ html, body, main {
 }
 
 .first-input{
-  margin: 50px 0 0 0;
+  margin: 30px 0 0 0;
+  @media screen and (min-width: 740px) {
+    left: 50%;
+    width:420px;
+    margin: 30px 0 0 -210px;
+  }
 }
