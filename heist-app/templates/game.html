@@ -12,7 +12,8 @@ console.log("js loaded");
 // console.log(document.getElementById('map'));
 initMap();
 // });
-
+var startLocation;
+var endLocation;
 var mapCenterLatLng;
 var map;
 
@@ -24,10 +25,15 @@ function initMap() {
   // $(".container").append('<div id="floating-panel"></div>');
   // $("#floating-panel").append('<input id="address" type="textbox" value="London, UK">');
   // $("#floating-panel").append('<input id="submit" type="button" value="Geocode">');
+  var directionsService = new google.maps.DirectionsService;
+  var directionsDisplay = new google.maps.DirectionsRenderer;
+  
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 13,
     center: {lat: 51.515081, lng: -0.071966}
   });
+  
+
   var geocoder = new google.maps.Geocoder();
 
   document.getElementById('submit').addEventListener('click', function() {
@@ -35,10 +41,41 @@ function initMap() {
     // Once map is loaded...
     google.maps.event.addListenerOnce(map, 'idle', function(){
       // console.log("Map is loaded fully");
-      getMapMarkers();
+    getMapMarkers();
+
     });    
   })
-}
+
+  // Sets the route renderer to draw on the map.
+  directionsDisplay.setMap(map);
+  google.maps.event.addListener(map, 'click', function(event) {
+    if (!startLocation){
+      startLocation = event.latLng;
+      console.log('Start selected' + startLocation);
+    } else if(!!startLocation && (!endLocation)){
+      endLocation = event.latLng;
+      console.log('End selected' + endLocation);
+      calculateAndDisplayRoute(directionsService, directionsDisplay);
+    } else {
+      console.log(event.latLng);
+    }; 
+});
+
+function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+        directionsService.route({
+          origin: startLocation,
+          // origin: document.getElementById('start').value,
+          destination: endLocation,
+          // destination: document.getElementById('end').value,
+          travelMode: 'DRIVING'
+        }, function(response, status) {
+          if (status === 'OK') {
+            directionsDisplay.setDirections(response);
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
+}  
 
 // Markers for banks etc
 function getMapMarkers() {
@@ -143,6 +180,9 @@ function createMarker(searchResult, type) {
     // animation: google.maps.Animation.BOUNCE,
     icon: "http://maps.google.com/mapfiles/ms/icons/" + color + "-dot.png"
   });
+}
+
+
 }
 
 </script>

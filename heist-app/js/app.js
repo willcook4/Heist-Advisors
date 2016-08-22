@@ -57,7 +57,11 @@ HeistApp.handleFormErrors = function(jqXHR) {
 
 HeistApp.loadPage = function() {
   event.preventDefault();
-  HeistApp.getTemplate($(this).data('template'));
+  var templateName = $(this).data('template');
+  HeistApp.getTemplate(templateName);
+  if(templateName === 'game') {
+    HeistApp.initGame();
+  }
 }
 
 HeistApp.logout = function() {
