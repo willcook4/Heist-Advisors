@@ -17,8 +17,11 @@ HeistApp.getTemplate = function(template, data) {
 HeistApp.getGame = function() {
   event.preventDefault();
   HeistApp.getTemplate("game");
-  
- 
+}
+
+HeistApp.getHome = function() {
+  event.preventDefault();
+  HeistApp.getTemplate("home");
 }
 
 HeistApp.handleForm = function() {
@@ -49,8 +52,8 @@ HeistApp.handleForm = function() {
 HeistApp.handleFormErrors = function(jqXHR) {
   console.log(jqXHR);
   var $form = $("form");
-  for(field in jqXHR.responseJSON) {
-    $form.find("input[name=" + field + "]").parents('.form-group').addClass('has-error');
+  for(field in jqXHR.responseJSON.errors) {
+    $form.find("input[name=" + field + "]").parent().find("small").removeClass('show-for-sr');
   }
   $form.find('button').removeAttr('disabled');
 }
@@ -76,9 +79,11 @@ HeistApp.updateUI = function() {
   if(loggedIn) {
     $('.logged-in').removeClass("hidden");
     $('.logged-out').addClass("hidden");
+    HeistApp.getTemplate("game");
   } else {
     $('.logged-in').addClass("hidden");
     $('.logged-out').removeClass("hidden");
+    HeistApp.getTemplate("home");
   }
 }
 
@@ -88,7 +93,8 @@ HeistApp.initEventHandlers = function() {
   $(".navbar a").not(".logout").on('click', this.loadPage);
   $(".navbar a.logout").on('click', this.logout);
   this.$main.on("focus", "form input", function() {
-    $(this).parents('.form-group').removeClass('has-error');
+    $(this).parent().find("small").addClass('show-for-sr');
+    console.log($(this).parent().find("small"))
   });
 
 }
@@ -99,4 +105,7 @@ HeistApp.init = function() {
 }.bind(HeistApp);
 
 $(HeistApp.init);
+
+
+
 
