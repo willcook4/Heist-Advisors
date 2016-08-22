@@ -15,7 +15,7 @@ console.log("js loaded");
 initMap();
 // });
 var policeStartLocation;
-var heistLocation;
+// var heistLocation;
 var endLocation;
 var mapCenterLatLng;
 var map;
@@ -56,6 +56,7 @@ function initMap() {
 
   // Sets the route renderer to draw on the map.
   directionsDisplay.setMap(map);
+  policeDirectionsDisplay.setMap(map);
 
 // Directions panel
 //directionsDisplay.setPanel(document.getElementById('directions-panel'));
@@ -83,8 +84,8 @@ function calculateAndDisplayRouteForPolice(policeDirectionsService, policeDirect
   }, function(response, status) {
     if (status === 'OK') {
       policeDirectionsDisplay.setDirections(response);
-      console.log(response);
-      console.log(response.routes[0].legs[0].duration.value);            
+      // console.log(response);
+      console.log("Time for the police to arrive in seconds: " + response.routes[0].legs[0].duration.value );            
     } else {
       window.alert('Directions request failed due to ' + status);
     }
@@ -139,11 +140,12 @@ function getMapMarkers() {
   };
 
   // Airports
-  var request3 = {
-    location: { lat: map.getCenter().lat(), lng: map.getCenter().lng() },
-    radius: '15000',
-    type: 'airport'
-  };
+  // var request3 = {
+  //   location: { lat: map.getCenter().lat(), lng: map.getCenter().lng() },
+  //   // radius: '15000',
+  //   rankBy : google.maps.places.RankBy.DISTANCE,
+  //   type: 'airport'
+  // };
 
   var request4 = {
     location: { lat: map.getCenter().lat(), lng: map.getCenter().lng() },
@@ -154,7 +156,7 @@ function getMapMarkers() {
   service = new google.maps.places.PlacesService(map);
   service.textSearch(request, mapMarkers);
   service.textSearch(request2, mapMarkers);
-  service.textSearch(request3, mapMarkers);
+  // service.textSearch(request3, mapMarkers);
   service.textSearch(request4, mapMarkers);
 }
 
@@ -202,20 +204,17 @@ function mapMarkers(results, status) {
 
 
 function findNearestPoliceStation(heistLocation, callback) {
-  console.log("HeistLocation" + heistLocation);
   var request = {
     location: heistLocation,
     rankBy: google.maps.places.RankBy.DISTANCE,
     types: ['police']
   };
-  console.log("request made");
   policeService = new google.maps.places.PlacesService(map);
   policeService.nearbySearch(request, function(results, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
-      console.log("places service works");
       return callback(results[0]);
     } else {
-      console.log("Bad search");
+      console.log("Bad search for police station...");
     }
   });
 }
