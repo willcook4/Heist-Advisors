@@ -52,8 +52,8 @@ HeistApp.handleForm = function() {
 HeistApp.handleFormErrors = function(jqXHR) {
   console.log(jqXHR);
   var $form = $("form");
-  for(field in jqXHR.responseJSON) {
-    $form.find("input[name=" + field + "]").parents('.form-group').addClass('has-error');
+  for(field in jqXHR.responseJSON.errors) {
+    $form.find("input[name=" + field + "]").parent().find("small").removeClass('show-for-sr');
   }
   $form.find('button').removeAttr('disabled');
 }
@@ -89,7 +89,8 @@ HeistApp.initEventHandlers = function() {
   $(".navbar a").not(".logout").on('click', this.loadPage);
   $(".navbar a.logout").on('click', this.logout);
   this.$main.on("focus", "form input", function() {
-    $(this).parents('.form-group').removeClass('has-error');
+    $(this).parent().find("small").addClass('show-for-sr');
+    console.log($(this).parent().find("small"))
   });
 
 }
