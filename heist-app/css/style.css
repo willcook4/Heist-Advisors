@@ -17,6 +17,14 @@
   position: absolute;
   z-index: 2; }
 
+.navbar {
+  position: absolute;
+  z-index: 99;
+  width: 100vw; }
+  .navbar li {
+    display: inline;
+    margin: 0 10px; }
+
 .title {
   position: absolute;
   z-index: 3;
@@ -30,6 +38,18 @@
     font-size: 100px;
     color: #F2F2F2;
     margin: 30px 0 0 0; }
+    @media screen and (max-width: 600px) {
+      .title h1 {
+        font-size: 80px;
+        margin: 50px 0 0 0; } }
+    @media screen and (max-width: 475px) {
+      .title h1 {
+        font-size: 60px;
+        margin: 70px 0 0 0; } }
+    @media screen and (max-width: 355px) {
+      .title h1 {
+        font-size: 55px;
+        margin: 75px 0 0 0; } }
   .title .line1 {
     width: 200px;
     height: 2px;
@@ -37,6 +57,14 @@
     position: absolute;
     top: 47.3%;
     left: 12%; }
+    @media screen and (max-width: 490px) {
+      .title .line1 {
+        width: 150px;
+        left: 20%; } }
+    @media screen and (max-width: 415px) {
+      .title .line1 {
+        width: 110px;
+        left: 25%; } }
   .title .circle {
     margin: 50px 0 50px -10px;
     height: 20px;
@@ -52,12 +80,26 @@
     position: absolute;
     top: 47.3%;
     right: 12%; }
+    @media screen and (max-width: 490px) {
+      .title .line2 {
+        width: 150px;
+        right: 20%; } }
+    @media screen and (max-width: 415px) {
+      .title .line2 {
+        width: 110px;
+        right: 25%; } }
   .title p {
     color: #F2F2F2;
     width: 600px;
     font-size: 30px;
     position: absolute;
     bottom: 150px; }
+    @media screen and (max-width: 600px) {
+      .title p {
+        font-size: 25px; } }
+    @media screen and (max-width: 475px) {
+      .title p {
+        font-size: 20px; } }
 
 form .form-control {
   margin: 0; }

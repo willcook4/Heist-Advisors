@@ -17,6 +17,17 @@
   position: absolute;
   z-index: 2;
 }
+
+.navbar{
+  position: absolute;
+  z-index: 99;
+  width: 100vw;
+  li{
+    display: inline;
+    margin: 0 10px;
+  }
+}
+
 .title{
   position: absolute;
   z-index: 3;
@@ -30,6 +41,18 @@
     font-size: 100px;
     color: #F2F2F2;
     margin: 30px 0 0 0;
+    @media screen and (max-width: 600px) {
+      font-size: 80px;
+      margin: 50px 0 0 0;
+    }
+    @media screen and (max-width: 475px) {
+      font-size: 60px;
+      margin: 70px 0 0 0;
+    }
+    @media screen and (max-width: 355px) {
+      font-size: 55px;
+      margin: 75px 0 0 0;
+    }
   }
   .line1{
     width: 200px;
@@ -38,6 +61,14 @@
     position:absolute;
     top: 47.3%;
     left: 12%;
+    @media screen and (max-width: 490px) {
+      width: 150px;
+      left: 20%;
+    }
+    @media screen and (max-width: 415px) {
+      width: 110px;
+      left: 25%;
+    }
   }
   .circle{
     margin: 50px 0 50px -10px;
@@ -55,6 +86,14 @@
     position:absolute;
     top: 47.3%;
     right: 12%;
+    @media screen and (max-width: 490px) {
+      width: 150px;
+      right: 20%;
+    }
+    @media screen and (max-width: 415px) {
+      width: 110px;
+      right: 25%;
+    }
   }
   p{
     color: #F2F2F2;
@@ -62,6 +101,12 @@
     font-size: 30px;
     position:absolute;
     bottom: 150px;
+    @media screen and (max-width: 600px) {
+      font-size: 25px;
+    }
+    @media screen and (max-width: 475px) {
+      font-size: 20px;
+    }
   }
 }
 
