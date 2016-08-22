@@ -2,9 +2,11 @@
 <div id="floating-panel">
   <input id="address" type="textbox" value="London, UK">
   <input id="submit" type="button" value="Geocode">
+  
 </div>
-
+<div id="directions-panel" class="hidden"></div>
 <div id="map"></div>
+
 
 <script>
 // document.addEventListener("DOMContentLoaded", function() {
@@ -12,10 +14,12 @@ console.log("js loaded");
 // console.log(document.getElementById('map'));
 initMap();
 // });
-var startLocation;
+var policeStartLocation;
+var heistLocation;
 var endLocation;
 var mapCenterLatLng;
 var map;
+
 
 var jewelryStores = [];
 var banks = [];
@@ -27,6 +31,8 @@ function initMap() {
   console.log("initializing");
   var directionsService = new google.maps.DirectionsService;
   var directionsDisplay = new google.maps.DirectionsRenderer;
+  var policeDirectionsService = new google.maps.DirectionsService;
+  var policeDirectionsDisplay = new google.maps.DirectionsRenderer;
 
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 13,
@@ -42,7 +48,7 @@ function initMap() {
     google.maps.event.addListenerOnce(map, 'idle', function(){
       // console.log("Map is loaded fully");
     getMapMarkers();
-    startLocation = false;
+    heistLocation = false;
     endLocation = false;
 
     });    
@@ -51,11 +57,14 @@ function initMap() {
   // Sets the route renderer to draw on the map.
   directionsDisplay.setMap(map);
 
+// Directions panel
+//directionsDisplay.setPanel(document.getElementById('directions-panel'));
+
 //   google.maps.event.addListener(map, 'click', function(event) {
-//     if (!startLocation){
-//       startLocation = event.latLng;
-//       console.log('Start selected' + startLocation);
-//     } else if(!!startLocation && (!endLocation)){
+//     if (!heistLocation){
+//       heistLocation = event.latLng;
+//       console.log('Start selected' + heistLocation);
+//     } else if(!!heistLocation && (!endLocation)){
 //       endLocation = event.latLng;
 //       console.log('End selected' + endLocation);
 //       calculateAndDisplayRoute(directionsService, directionsDisplay);
@@ -63,27 +72,48 @@ function initMap() {
 //       console.log(event.latLng);
 //     }; 
 // });
+function calculateAndDisplayRouteForPolice(policeDirectionsService, policeDirectionsDisplay, startPlace) {
+  console.log("Police station start point: " + startPlace.geometry.location);
+  policeDirectionsService.route({
+    origin: startPlace.geometry.location,
+    // origin: document.getElementById('start').value,
+    destination: heistLocation,
+    // destination: document.getElementById('end').value,
+    travelMode: 'DRIVING'
+  }, function(response, status) {
+    if (status === 'OK') {
+      policeDirectionsDisplay.setDirections(response);
+      console.log(response);
+      console.log(response.routes[0].legs[0].duration.value);            
+    } else {
+      window.alert('Directions request failed due to ' + status);
+    }
+  });
+}
 
-function calculateAndDisplayRoute(directionsService, directionsDisplay) {
-        directionsService.route({
-          origin: startLocation,
-          // origin: document.getElementById('start').value,
-          destination: endLocation,
-          // destination: document.getElementById('end').value,
-          travelMode: 'DRIVING'
-        }, function(response, status) {
-          if (status === 'OK') {
-            directionsDisplay.setDirections(response);
-          } else {
-            window.alert('Directions request failed due to ' + status);
-          }
-        });
+function calculateAndDisplayRoute(directionsService, directionsDisplay, startPlace) {
+  directionsService.route({
+    origin: startPlace,
+    // origin: document.getElementById('start').value,
+    destination: endLocation,
+    // destination: document.getElementById('end').value,
+    travelMode: 'DRIVING'
+  }, function(response, status) {
+    if (status === 'OK') {
+      directionsDisplay.setDirections(response);
+      console.log(response);
+      console.log(response.routes[0].legs[0].duration.value);            
+    } else {
+      window.alert('Directions request failed due to ' + status);
+    }
+  });
 }  
 
 function clearMarkers(markers) {
-  for (var i = 0; i < markers.length; i++) {
-    markers[i].setMap(null);
-  }
+  console.log(markers);
+  markers.forEach(function(marker) {
+    marker.setMap(null);
+  });
   return [];
 }
 
@@ -169,12 +199,52 @@ function mapMarkers(results, status) {
   }
 }
 
-function markerListener(marker) {
+
+
+function findNearestPoliceStation(heistLocation, callback) {
+  // console.log("finding findNearestPoliceStation");
+  var request = {
+    location: heistLocation,
+    rankBy: google.maps.places.RankBy.DISTANCE,
+    type: 'police'
+  };
+  console.log("request made");
+  service = new google.maps.places.PlacesService(map);
+  service.nearbySearch(request, function(results, status) {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+      console.log("places service works");
+      return callback(results[0]);
+    } else {
+      console.log("Bad search");
+    }
+  });
+}
+
+function heistMarkerListener(marker) {
+  marker.addListener('click', function(event) {
+    if (!heistLocation){
+      heistLocation = event.latLng;
+      console.log('Start selected', event.latLng.lat(), event.latLng.lng());
+      // console.log('Event geometry' + );
+      findNearestPoliceStation(heistLocation, function(pigShop) {
+        console.log("pigshop: " + pigShop);
+        calculateAndDisplayRouteForPolice(policeDirectionsService, policeDirectionsDisplay, pigShop);
+      });
+    } else if(!!heistLocation && (!endLocation)){
+      endLocation = event.latLng;
+      console.log('End selected' + endLocation);
+      calculateAndDisplayRoute(directionsService, directionsDisplay, heistLocation);
+    }
+     
+  });
+}
+
+function airportMarkerListener(marker) {
   google.maps.event.addListener(marker, 'click', function(event) {
-    if (!startLocation){
-      startLocation = event.latLng;
-      console.log('Start selected' + startLocation);
-    } else if(!!startLocation && (!endLocation)){
+    if (!heistLocation){
+      heistLocation = event.latLng;
+      console.log('Start selected' + heistLocation);
+    } else if(!!heistLocation && (!endLocation)){
       endLocation = event.latLng;
       console.log('End selected' + endLocation);
       calculateAndDisplayRoute(directionsService, directionsDisplay);
@@ -197,6 +267,7 @@ function createMarker(searchResult, type) {
     color = 'red';
   } else if (type === 'police') {
     color = 'green';
+
   } else {
     // airport
     color = 'blue';
@@ -208,7 +279,10 @@ function createMarker(searchResult, type) {
     // animation: google.maps.Animation.BOUNCE,
     icon: "http://maps.google.com/mapfiles/ms/icons/" + color + "-dot.png"
   });
-  markerListener(marker);
+
+  if(type === 'bank' || type === 'jewelry_store') {
+    heistMarkerListener(marker);  
+  }
   return marker;
 }
 

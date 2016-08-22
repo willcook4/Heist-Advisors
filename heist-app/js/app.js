@@ -59,9 +59,9 @@ HeistApp.loadPage = function() {
   event.preventDefault();
   var templateName = $(this).data('template');
   HeistApp.getTemplate(templateName);
-  if(templateName === 'game') {
-    HeistApp.initGame();
-  }
+  // if(templateName === 'game') {
+  //   HeistApp.initGame();
+  // }
 }
 
 HeistApp.logout = function() {
