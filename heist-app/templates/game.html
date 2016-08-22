@@ -16,14 +16,14 @@ initMap();
 var mapCenterLatLng;
 var map;
 
+var jewelryStores = [];
+var banks = [];
+var policeStations = [];
+var airports = [];
+
 function initMap() {
 
   console.log("initializing");
-  // Create a default landing map
-  // $(".container").append('<div id="map"></div>');
-  // $(".container").append('<div id="floating-panel"></div>');
-  // $("#floating-panel").append('<input id="address" type="textbox" value="London, UK">');
-  // $("#floating-panel").append('<input id="submit" type="button" value="Geocode">');
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 13,
     center: {lat: 51.515081, lng: -0.071966}
@@ -40,40 +40,52 @@ function initMap() {
   })
 }
 
+function clearMarkers(markers) {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
+  }
+  return [];
+}
+
 // Markers for banks etc
 function getMapMarkers() {
-    // banks
-    var request = {
-      location: { lat: map.getCenter().lat(), lng: map.getCenter().lng() },
-      radius: '8000',
-      type: 'bank'
-    };
+  jewelryStores = clearMarkers(jewelryStores);
+  banks = clearMarkers(banks);
+  policeStations = clearMarkers(policeStations);
+  airports = clearMarkers(airports);
 
-    // jewelry_store
-    var request2 = {
-      location: { lat: map.getCenter().lat(), lng: map.getCenter().lng() },
-      radius: '8000',
-      type: 'jewelry_store'
-    };
+  // banks
+  var request = {
+    location: { lat: map.getCenter().lat(), lng: map.getCenter().lng() },
+    radius: '8000',
+    type: 'bank'
+  };
 
-    // Airports
-    var request3 = {
-      location: { lat: map.getCenter().lat(), lng: map.getCenter().lng() },
-      radius: '15000',
-      type: 'airport'
-    };
+  // jewelry_store
+  var request2 = {
+    location: { lat: map.getCenter().lat(), lng: map.getCenter().lng() },
+    radius: '8000',
+    type: 'jewelry_store'
+  };
 
-    var request4 = {
-      location: { lat: map.getCenter().lat(), lng: map.getCenter().lng() },
-      radius: '8000',
-      type: 'police'
-    };
+  // Airports
+  var request3 = {
+    location: { lat: map.getCenter().lat(), lng: map.getCenter().lng() },
+    radius: '15000',
+    type: 'airport'
+  };
 
-    service = new google.maps.places.PlacesService(map);
-    service.textSearch(request, mapMarkers);
-    service.textSearch(request2, mapMarkers);
-    service.textSearch(request3, mapMarkers);
-    service.textSearch(request4, mapMarkers);
+  var request4 = {
+    location: { lat: map.getCenter().lat(), lng: map.getCenter().lng() },
+    radius: '8000',
+    type: 'police'
+  };
+
+  service = new google.maps.places.PlacesService(map);
+  service.textSearch(request, mapMarkers);
+  service.textSearch(request2, mapMarkers);
+  service.textSearch(request3, mapMarkers);
+  service.textSearch(request4, mapMarkers);
 }
 
 function geocodeAddress(geocoder, resultsMap) {
@@ -81,10 +93,10 @@ function geocodeAddress(geocoder, resultsMap) {
   geocoder.geocode({'address': address}, function(results, status) {
     if (status === 'OK') {
       resultsMap.setCenter(results[0].geometry.location);
-      var marker = new google.maps.Marker({
-        map: resultsMap,
-        position: results[0].geometry.location
-      });
+      // var marker = new google.maps.Marker({
+      //   map: resultsMap,
+      //   position: results[0].geometry.location
+      // }); Creating marker for geocode search result.
 
     } else {
       alert('Geocode was not successful for the following reason: ' + status);
@@ -101,18 +113,16 @@ function mapMarkers(results, status) {
       var place = results[i];
       
       if (place.types.includes("bank")) {
-        createMarker(results[i], "bank");
+        banks.push(createMarker(results[i], "bank"));
 
       } else if(place.types.includes("jewelry_store")) {
-        createMarker(results[i], "jewelry_store");
+        jewelryStores.push(createMarker(results[i], "jewelry_store"));
       
       } else if(place.types.includes("airport")) {
-        createMarker(results[i], "airport");
+        airports.push(createMarker(results[i], "airport"));
       
       } else if(place.types.includes("police")) {
-        createMarker(results[i], 'police');
-        console.log('police: ' + results[i].name); 
-      
+        policeStations.push(createMarker(results[i], 'police'));
       } else {
       }
     } 
@@ -143,6 +153,7 @@ function createMarker(searchResult, type) {
     // animation: google.maps.Animation.BOUNCE,
     icon: "http://maps.google.com/mapfiles/ms/icons/" + color + "-dot.png"
   });
+  return marker;
 }
 
 </script>
