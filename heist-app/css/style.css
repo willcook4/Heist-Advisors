@@ -138,8 +138,8 @@ html, body, main {
 
 #floating-panel {
   position: absolute;
-  top: 10px;
-  left: 25%;
+  top: 50px;
+  left: 10px;
   z-index: 5;
   background-color: #fff;
   padding: 5px;
@@ -148,5 +148,8 @@ html, body, main {
   font-family: 'Roboto' 'sans-serif';
   line-height: 30px;
   padding-left: 10px; }
+
+.first-input {
+  margin: 50px 0 0 0; }
 
 /*# sourceMappingURL=style.css.map */
