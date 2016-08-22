@@ -202,15 +202,15 @@ function mapMarkers(results, status) {
 
 
 function findNearestPoliceStation(heistLocation, callback) {
-  // console.log("finding findNearestPoliceStation");
+  console.log("HeistLocation" + heistLocation);
   var request = {
     location: heistLocation,
     rankBy: google.maps.places.RankBy.DISTANCE,
-    type: 'police'
+    types: ['police']
   };
   console.log("request made");
-  service = new google.maps.places.PlacesService(map);
-  service.nearbySearch(request, function(results, status) {
+  policeService = new google.maps.places.PlacesService(map);
+  policeService.nearbySearch(request, function(results, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       console.log("places service works");
       return callback(results[0]);
