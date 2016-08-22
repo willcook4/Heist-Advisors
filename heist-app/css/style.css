@@ -1,8 +1,11 @@
+body {
+  background-color: #020202; }
+
 .background {
   height: 100vh;
   width: 100vw;
-  background-color: red;
-  background-image: url("../images/promo4.jpg");
+  background-color: black;
+  background-image: url("../images/promo1.jpg");
   background-size: cover;
   -webkit-filter: blur(3px);
   -moz-filter: blur(3px);
@@ -20,10 +23,13 @@
 .navbar {
   position: absolute;
   z-index: 99;
-  width: 100vw; }
+  width: 100vw;
+  top: 10px; }
   .navbar li {
     display: inline;
     margin: 0 10px; }
+    .navbar li a {
+      color: #F2F2F2; }
 
 .title {
   position: absolute;
