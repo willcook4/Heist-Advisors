@@ -26,14 +26,42 @@
   left: 50%;
   top: 25%;
   text-align: center;
-  background-color:red;
   h1{
     font-size: 100px;
     color: #F2F2F2;
+    margin: 30px 0 0 0;
   }
-  h6{
-    font-size: 40px;
+  .line1{
+    width: 200px;
+    height: 2px;
+    background-color: #F2F2F2;
+    position:absolute;
+    top: 47.3%;
+    left: 12%;
+  }
+  .circle{
+    margin: 50px 0 50px -10px;
+    height: 20px;
+    width: 20px;
+    background-color:#F2F2F2;
+    position:relative;
+    left: 50%;
+    border-radius: 100%;
+  }
+  .line2{
+    width: 200px;
+    height: 2px;
+    background-color: #F2F2F2;
+    position:absolute;
+    top: 47.3%;
+    right: 12%;
+  }
+  p{
     color: #F2F2F2;
+    width:600px;
+    font-size: 30px;
+    position:absolute;
+    bottom: 150px;
   }
 }
 

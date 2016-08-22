@@ -25,14 +25,39 @@
   margin: 0 0 0 -300px;
   left: 50%;
   top: 25%;
-  text-align: center;
-  background-color: red; }
+  text-align: center; }
   .title h1 {
     font-size: 100px;
-    color: #F2F2F2; }
-  .title h6 {
-    font-size: 40px;
-    color: #F2F2F2; }
+    color: #F2F2F2;
+    margin: 30px 0 0 0; }
+  .title .line1 {
+    width: 200px;
+    height: 2px;
+    background-color: #F2F2F2;
+    position: absolute;
+    top: 47.3%;
+    left: 12%; }
+  .title .circle {
+    margin: 50px 0 50px -10px;
+    height: 20px;
+    width: 20px;
+    background-color: #F2F2F2;
+    position: relative;
+    left: 50%;
+    border-radius: 100%; }
+  .title .line2 {
+    width: 200px;
+    height: 2px;
+    background-color: #F2F2F2;
+    position: absolute;
+    top: 47.3%;
+    right: 12%; }
+  .title p {
+    color: #F2F2F2;
+    width: 600px;
+    font-size: 30px;
+    position: absolute;
+    bottom: 150px; }
 
 form .form-control {
   margin: 0; }
