@@ -1,8 +1,24 @@
+@font-face {
+  font-family: pricedown;
+  src: url("../fonts/pricedown.ttf"); }
+body {
+  background-color: #020202;
+  font-family: Dosis; }
+
+.button {
+  font-family: Dosis; }
+
+button {
+  font-family: Dosis; }
+
+input {
+  font-family: Dosis; }
+
 .background {
   height: 100vh;
   width: 100vw;
-  background-color: red;
-  background-image: url("../images/promo4.jpg");
+  background-color: black;
+  background-image: url("../images/promo1.jpg");
   background-size: cover;
   -webkit-filter: blur(3px);
   -moz-filter: blur(3px);
@@ -17,16 +33,133 @@
   position: absolute;
   z-index: 2; }
 
+.navbar-fade {
+  position: absolute;
+  z-index: 1;
+  width: 100vw;
+  top: 0;
+  padding: 10px 0 30px 0;
+  background-image: linear-gradient(black, transparent); }
+
+.navbar {
+  position: absolute;
+  z-index: 99;
+  width: 100vw;
+  top: 10px; }
+  .navbar li {
+    display: inline;
+    margin: 0 10px;
+    z-index: 3; }
+    .navbar li a {
+      color: #F2F2F2; }
+
 .title {
   position: absolute;
   z-index: 3;
   width: 600px;
-  height: 200px;
+  height: 400px;
   margin: 0 0 0 -300px;
   left: 50%;
   top: 25%;
-  text-align: center;
-  font-size: 100px; }
+  text-align: center; }
+  .title h1 {
+    font-size: 100px;
+    color: #F2F2F2;
+    margin: 30px 0 0 0;
+    font-family: pricedown;
+    text-shadow: -5px 0 black, 0 5px black, 5px 0 black, 0 -5px black; }
+    @media screen and (max-width: 600px) {
+      .title h1 {
+        font-size: 80px;
+        margin: 50px 0 0 0; } }
+    @media screen and (max-width: 475px) {
+      .title h1 {
+        font-size: 60px;
+        margin: 70px 0 0 0; } }
+    @media screen and (max-width: 355px) {
+      .title h1 {
+        font-size: 55px;
+        margin: 75px 0 0 0; } }
+  .title .line1 {
+    width: 200px;
+    height: 2px;
+    background-color: #F2F2F2;
+    position: absolute;
+    top: 47.3%;
+    left: 12%; }
+    @media screen and (max-width: 490px) {
+      .title .line1 {
+        width: 150px;
+        left: 20%; } }
+    @media screen and (max-width: 415px) {
+      .title .line1 {
+        width: 110px;
+        left: 25%; } }
+  .title .circle {
+    margin: 50px 0 50px -10px;
+    height: 20px;
+    width: 20px;
+    background-color: #F2F2F2;
+    position: relative;
+    left: 50%;
+    border-radius: 100%; }
+  .title .line2 {
+    width: 200px;
+    height: 2px;
+    background-color: #F2F2F2;
+    position: absolute;
+    top: 47.3%;
+    right: 12%; }
+    @media screen and (max-width: 490px) {
+      .title .line2 {
+        width: 150px;
+        right: 20%; } }
+    @media screen and (max-width: 415px) {
+      .title .line2 {
+        width: 110px;
+        right: 25%; } }
+  .title p {
+    color: #F2F2F2;
+    width: 600px;
+    font-size: 30px;
+    position: absolute;
+    bottom: 150px; }
+    @media screen and (max-width: 600px) {
+      .title p {
+        font-size: 25px; } }
+    @media screen and (max-width: 475px) {
+      .title p {
+        font-size: 20px; } }
+
+form {
+  background-color: #2C2C2C;
+  border-radius: 1px;
+  width: 60%;
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  margin-left: -30%;
+  box-shadow: 0px 0px 20px #2F2F2F; }
+  form .form-control {
+    margin: 0; }
+  form button {
+    height: 37px;
+    line-height: 0;
+    margin: 20px 0;
+    background-color: #3F3F3F; }
+    form button:hover {
+      background-color: #4F4F4F; }
+
+.center-form {
+  margin: 20px 0 0 0; }
+  @media screen and (min-width: 740px) {
+    .center-form {
+      left: 50%;
+      width: 420px;
+      margin: 20px 0 0 -210px; } }
+
+small.error {
+  margin: 0; }
 
 .hidden {
   display: none; }
@@ -34,29 +167,49 @@
 html, body, main {
   height: 100%;
   margin: 0;
-  padding: 0; }
+  padding: 0;
+  text-align: center; }
 
 #map {
   height: 100%; }
 
-#directions-panel {
-  position: absolute;
-  height: 100%;
-  width: 30%;
-  z-index: 5;
-}
-
 #floating-panel {
   position: absolute;
   top: 10px;
-  left: 25%;
+  left: 10px;
   z-index: 5;
-  background-color: #fff;
-  padding: 5px;
-  border: 1px solid #999;
-  text-align: center;
-  font-family: 'Roboto','sans-serif';
-  line-height: 30px;
-  padding-left: 10px; }
+  background-color: #F2F2F2;
+  height: 50px;
+  width: 305px; }
+  #floating-panel .location-search {
+    position: absolute;
+    left: 0;
+    top: 0; }
+    #floating-panel .location-search input {
+      width: 220px;
+      padding: 0 0 0 20px;
+      height: 50px;
+      background-color: #F2F2F2;
+      border: 0; }
+  #floating-panel .location-button {
+    position: absolute;
+    right: 0;
+    bottom: 0; }
+  #floating-panel input#submit {
+    color: #020202;
+    height: 50px;
+    border: 0;
+    background-color: #C2C2C2;
+    margin: 0; }
+    #floating-panel input#submit:hover {
+      background-color: grey; }
+
+.first-input {
+  margin: 30px 0 0 0; }
+  @media screen and (min-width: 740px) {
+    .first-input {
+      left: 50%;
+      width: 420px;
+      margin: 30px 0 0 -210px; } }
 
 /*# sourceMappingURL=style.css.map */
