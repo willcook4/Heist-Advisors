@@ -19,6 +19,7 @@ var mapCenterLatLng;
 var map;
 var marker;
 var airportLatLng;
+var winner;
 
 var jewelryStores = [];
 var banks = [];
@@ -79,17 +80,12 @@ function initMap() {
         policeDirectionDisplay = new google.maps.DirectionsRenderer();
         policeDirectionDisplay.setMap(map);
         var waypoints = [{ location: heistLocation, stopover: false }];
-        // var waypoints = [];
         console.log("waypoints", waypoints);
-        getDirectionsAndAnimate(policeDirectionService, policeDirectionDisplay, policeStation, airportLatLng, waypoints);
-        // console.log("status okay");
+        var speed = 90;
+        var image = "../images/policecar.png";
+        while(airportLatLng === undefined) {};
+        getDirectionsAndAnimate(policeDirectionService, policeDirectionDisplay, policeStation, airportLatLng, waypoints, speed, image);
 
-
-        // policeDirectionsDisplay = new google.maps.DirectionsRenderer();
-        // policeDirectionsDisplay.setMap(map);
-        // policeDirectionsDisplay.setDirections(response);
-
-        // console.log(response);
         console.log("Time for Police to arrive: " + response.routes[0].legs[0].duration.value);
 
         function totalDistance(route) {
@@ -107,7 +103,7 @@ function initMap() {
     });
   }
 
-  function calculateAndDisplayRouteToAirport() {
+  function calculateAndDisplayRouteForCriminals() {
     var airportLat;
     var airportLng;
 
@@ -124,33 +120,9 @@ function initMap() {
         airportDirectionDisplay = new google.maps.DirectionsRenderer();
         airportDirectionDisplay.setMap(map);
         var waypoints = [];
-        getDirectionsAndAnimate(airportDirectionService, airportDirectionDisplay, heistLocation, airportLatLng, waypoints);
-
-
-        // airportDirectionsService.route({
-        //   origin: heistLocation,
-        //   destination: airportLatLng,
-        //   travelMode: 'DRIVING'
-        // }, function(response, status) {
-        //   if (status === 'OK') {
-        //     airportDirectionsDisplay = new google.maps.DirectionsRenderer();
-        //     airportDirectionsDisplay.setMap(map);
-        //     airportDirectionsDisplay.setDirections(response);
-        //     console.log(response);
-        //     console.log("Time to get to airport: " + response.routes[0].legs[0].duration.value);
-            
-        //     function totalDistance(route) {
-        //       var total= 0;
-        //       for (i = 0; i < route.legs.length; i++) {
-        //         total += route.legs[i].distance.value;
-        //       }
-        //       console.log("Total Distance to airport: " + total);
-        //     }
-        //     totalDistance(response.routes[0]);
-        //   } else {
-        //     window.alert('Directions request failed due to ' + status);
-        //   }
-        // });
+        var speed = 100;
+        var image = "../images/criminal_car.png";
+        getDirectionsAndAnimate(airportDirectionService, airportDirectionDisplay, heistLocation, airportLatLng, waypoints, speed, image);
         }
     });
   }  
@@ -292,7 +264,7 @@ function initMap() {
         heistLocation = event.latLng;
         console.log('Start selected', event.latLng.lat(), event.latLng.lng());
         findNearestAirport(heistLocation, function(airport) {
-          calculateAndDisplayRouteToAirport();
+          calculateAndDisplayRouteForCriminals();
         });
         findNearestPoliceStation(heistLocation, function(pigShop) {
           calculateAndDisplayRouteForPolice(policeDirectionsService, policeDirectionsDisplay, pigShop);
@@ -343,7 +315,7 @@ function initMap() {
     // map.panTo(latlng);
   }
 
-  function autoRefresh(map, pathCoords) {
+  function autoRefresh(map, pathCoords, speed, image) {
     var i, route, marker;
     var color = '#FF0000';
     route = new google.maps.Polyline({
@@ -353,20 +325,24 @@ function initMap() {
       strokeOpacity: 1.0,
       strokeWeight: 10,
       editable: false,
-      map:map
+      map: map
     });
     
-    marker=new google.maps.Marker({map:map, icon:"http://maps.google.com/mapfiles/ms/micons/blue.png"});
+    marker=new google.maps.Marker({map:map, icon:image});
 
     for (i = 0; i < pathCoords.length; i++) {       
       setTimeout(function(coords) {
         route.getPath().push(coords);
         moveMarker(map, marker, coords);
-      }, 100 * i, pathCoords[i]);
+        if (!winner && i === pathCoords.length - 1) {
+          winner = image;
+          console.log("winner is: " + winner);
+        }
+      }, speed * i, pathCoords[i]);
     }
   }
   
-  function getDirectionsAndAnimate(directionService, directionDisplay, origin, destination, waypoints) {
+  function getDirectionsAndAnimate(directionService, directionDisplay, origin, destination, waypoints, speed, image) {
     console.log("getting directions", origin, destination);
 
     var request = {
@@ -379,8 +355,6 @@ function initMap() {
     directionService.route(request, function(result, status) {
       console.log("result and status", result, status);
       if (status == google.maps.DirectionsStatus.OK) {
-          // directionDisplay = new google.maps.DirectionsRenderer();
-          // directionDisplay.setMap(map);
           console.log("this is the request", request);
           directionDisplay.setDirections(result);
           console.log("Time to get to airport: " + result.routes[0].legs[0].duration.value);
@@ -393,7 +367,7 @@ function initMap() {
             console.log("Total Distance to airport: " + total);
           }
           totalDistance(result.routes[0]);
-          autoRefresh(map, result.routes[0].overview_path);
+          autoRefresh(map, result.routes[0].overview_path, speed, image);
         } else {
           window.alert('Directions request failed due to ' + status);
         }
