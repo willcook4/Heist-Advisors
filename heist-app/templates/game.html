@@ -1,4 +1,3 @@
-
 <div id="directions-panel" class="hidden"></div>
 <div id="map"></div>
 
@@ -30,17 +29,15 @@
 </div>
 
 <script>
-// document.addEventListener("DOMContentLoaded", function() {
 console.log("js loaded");
-// console.log(document.getElementById('map'));
 initMap();
-// });
 var policeStartLocation;
-// var heistLocation;
 var endLocation;
 var mapCenterLatLng;
 var map;
 var marker;
+var airportLatLng;
+var winner;
 var distanceToAirport;
 var criminalRandom;
 var policeDistanceToHiest;
@@ -58,16 +55,8 @@ function initMap() {
   var directionsDisplay = new google.maps.DirectionsRenderer;
   var policeDirectionsService = new google.maps.DirectionsService();
   var policeDirectionsDisplay;
-  // var policeDirectionsDisplay = new google.maps.DirectionsRenderer;
   var airportDirectionsService = new google.maps.DirectionsService();
   var airportDirectionsDisplay;
-  // var airportDirectionsDisplay = new google.maps.DirectionsRenderer;
-
-
-  // Sets the route renderer to draw on the map.
-  // directionsDisplay.setMap(map);
-  // policeDirectionsDisplay.setMap(map);
-  // airportDirectionsDisplay.setMap(map);
 
   // Create a map
   map = new google.maps.Map(document.getElementById('map'), {
@@ -96,29 +85,12 @@ function initMap() {
     });    
   })
 
-
-// Directions panel
-//directionsDisplay.setPanel(document.getElementById('directions-panel'));
-
-//   google.maps.event.addListener(map, 'click', function(event) {
-//     if (!heistLocation){
-//       heistLocation = event.latLng;
-//       console.log('Start selected' + heistLocation);
-//     } else if(!!heistLocation && (!endLocation)){
-//       endLocation = event.latLng;
-//       console.log('End selected' + endLocation);
-//       calculateAndDisplayRoute(directionsService, directionsDisplay);
-//     } else {
-//       console.log(event.latLng);
-//     }; 
-// });
 function calculateAndDisplayRouteForPolice(policeDirectionsService, policeDirectionsDisplay, startPlace) {
   console.log("Police station start point: " + startPlace.geometry.location);
+  var policeStation = startPlace.geometry.location
   policeDirectionsService.route({
-    origin: startPlace.geometry.location,
-    // origin: document.getElementById('start').value,
+    origin: policeStation,
     destination: heistLocation,
-    // destination: document.getElementById('end').value,
     travelMode: 'DRIVING',
     drivingOptions: {
         departureTime: new Date(Date.now()),
@@ -126,15 +98,21 @@ function calculateAndDisplayRouteForPolice(policeDirectionsService, policeDirect
       }
   }, function(response, status) {
     if (status === 'OK') {
-      // console.log("status okay");
+      policeDirectionsService = new google.maps.DirectionsService();
       policeDirectionsDisplay = new google.maps.DirectionsRenderer();
+      policeDirectionsDisplay.setMap(map);
       policeDirectionsDisplay.setOptions({
         preserveViewport: true
       });
-      policeDirectionsDisplay.setMap(map);
-      policeDirectionsDisplay.setDirections(response);
+      // policeDirectionsDisplay.setDirections(response);
+      var waypoints = [{ location: heistLocation, stopover: false }];
+      console.log("waypoints", waypoints);
+      var speed = 90;
+      var image = "../images/policecar.png";
+      var color = "#FF0000"
+      // while(airportLatLng === undefined) {};
+      getDirectionsAndAnimate(policeDirectionsService, policeDirectionsDisplay, policeStation, airportLatLng, waypoints, speed, image, color);
 
-      // console.log(response);
       console.log("Time for Police to arrive: " + response.routes[0].legs[0].duration.value);
 
       function totalDistance(route) {
@@ -144,7 +122,6 @@ function calculateAndDisplayRouteForPolice(policeDirectionsService, policeDirect
         }
         console.log("Total Distance for Police to the Heist: " + total);
         policeDistanceToHiest = total;
-
       }
       totalDistance(response.routes[0]);
 
@@ -154,128 +131,30 @@ function calculateAndDisplayRouteForPolice(policeDirectionsService, policeDirect
   });
 }
 
-function calculateAndDisplayRouteToAirport(airportDirectionsService, airportDirectionsDisplay) {
+function calculateAndDisplayRouteForCriminals() {
   var airportLat;
   var airportLng;
-  var airportLatLng; 
 
   $.ajax({
     url: "https://airport.api.aero/airport/nearest/" + heistLocation.lat() + "/" + heistLocation.lng()+"?maxAirports=1&user_key=c6da13c45831bd2e3a96983d43065e7a",
     jsonp: "callback",
     dataType: "jsonp",
     success: function(data){
-      // console.log(data.airports[0].lat);
       airportLat = parseFloat(data.airports[0].lat);
-      // console.log(data.airports[0].lng);
       airportLng = parseFloat(data.airports[0].lng);
-      // console.log(data.airports[0]);
       airportLatLng = new google.maps.LatLng(airportLat, airportLng);
       console.log("Airport: " + airportLatLng);
-      airportDirectionsService.route({
-        origin: heistLocation,
-        destination: airportLatLng,
-        travelMode: 'DRIVING'
-      }, function(response, status) {
-        if (status === 'OK') {
-          airportDirectionsDisplay = new google.maps.DirectionsRenderer();
-          airportDirectionsDisplay.setOptions({
-            preserveViewport: true
-          });
-          airportDirectionsDisplay.setMap(map);
-          airportDirectionsDisplay.setDirections(response);
-          console.log(response);
-          console.log("Time to get to airport: " + response.routes[0].legs[0].duration.value);
-          
-          function totalDistance(route) {
-            var total= 0;
-            for (i = 0; i < route.legs.length; i++) {
-              total += route.legs[i].distance.value;
-            }
-            console.log("Total Distance to airport: " + total+"m");
-            distanceToAirport = total;
-
-
-            var criminalEstimate = Math.ceil(((distanceToAirport/1000)/80)*60)
-            $(".criminal-estimate").html("You are about " +criminalEstimate + " minutes away.")
-            var policeEstimate = Math.ceil(((distanceToAirport/1000)/90)*60)
-            $(".police-estimate").html("The police are about " +policeEstimate + " minutes way")
-
-            $(".rob").on("click", function(){
-              policeRandom = ((Math.ceil(Math.random()*100))/100);
-              while(policeRandom <= .75){
-                policeRandom = ((Math.ceil(Math.random()*100))/100);
-              }
-              criminalRandom = ((Math.ceil(Math.random()*100))/100);
-              while(criminalRandom <= .9){
-                criminalRandom = ((Math.ceil(Math.random()*100))/100);
-              }
-              var criminalTime = (distanceToAirport/1000)/(80*criminalRandom);
-
-              //minutes = policeTime*60 remainder is seconds in decimal
-              var criminalRemainder = (criminalTime*60) - (Math.floor(criminalTime*60))
-              var criminalSeconds = (Math.floor(criminalRemainder*60))
-
-              console.log("You are " + (Math.floor(criminalTime*60)) + " minutes away and " + criminalSeconds + " seconds away!");
-
-              $(".criminalTimeTag").html("You are " + (Math.floor(criminalTime*60)) + " minutes away and " + criminalSeconds + " seconds away!");
-
-
-
-              
-
-              var policeTime = (distanceToAirport/1000)/(90*policeRandom);
-              //minutes = policeTime*60 remainder is seconds in decimal
-              var policeRemainder = (policeTime*60) - (Math.floor(policeTime*60))
-              var policeSeconds = (Math.floor(policeRemainder*60))
-
-              console.log("The police are " + (Math.floor(policeTime*60)) + " minutes away and " + policeSeconds + " seconds away!");
-
-              $(".policeTimeTag").html("The police are " + (Math.floor(policeTime*60)) + " minutes away and " + policeSeconds + " seconds away!");
-
-
-
-
-              if(policeTime < criminalTime){
-                //win
-                $(".win-or-lose").html("The police find you on your way to the aiport. YOU LOSE");
-              } else if(criminalTime < policeTime){
-                //lose
-                $(".win-or-lose").html("YOU WIN");
-              } else if(policeTime = criminalTime){
-                //meet the police
-                $(".win-or-lose").html("You meet the police at the airport!");
-              } else {
-                console.error("Something went wrong when determining who wins");
-              }
-            })
-
-            
-
-          }
-          totalDistance(response.routes[0]);
-        } else {
-          window.alert('Directions request failed due to ' + status);
-        }
-      });
+      airportDirectionService = new google.maps.DirectionsService();
+      airportDirectionDisplay = new google.maps.DirectionsRenderer();
+      airportDirectionDisplay.setMap(map);
+      var waypoints = [];
+      var speed = 100;
+      var image = "../images/criminal_car.png";
+      var color = '#0000FF';
+      getDirectionsAndAnimate(airportDirectionService, airportDirectionDisplay, heistLocation, airportLatLng, waypoints, speed, image, color);   
       }
   });
-  // console.log(airportLatLng);
-  // console.log("Airport point: ", airport.geometry.location);
-  // airportDirectionsService.route({
-  //   origin: heistLocation,
-  //   destination: airportLatLng,
-  //   travelMode: 'DRIVING'
-  // }, function(response, status) {
-  //   if (status === 'OK') {
-  //     airportDirectionsDisplay = new google.maps.DirectionsRenderer();
-  //     airportDirectionsDisplay.setMap(map);
-  //     airportDirectionsDisplay.setDirections(response);
-  //     console.log(response);
-  //     console.log("Time to get to airport: " + response.routes[0].legs[0].duration.value);            
-  //   } else {
-  //     window.alert('Directions request failed due to ' + status);
-  //   }
-  // });
+
 }  
 
 function clearMarkers(markers) {
@@ -414,41 +293,20 @@ function heistMarkerListener(marker) {
     if (!heistLocation) {
       heistLocation = event.latLng;
       console.log('Start selected', event.latLng.lat(), event.latLng.lng());
+      findNearestAirport(heistLocation, function(airport) {
+        calculateAndDisplayRouteForCriminals();
+      });
       findNearestPoliceStation(heistLocation, function(pigShop) {
-        console.log("Police Station: " + pigShop.name + ", " + pigShop.formatted_address);
         calculateAndDisplayRouteForPolice(policeDirectionsService, policeDirectionsDisplay, pigShop);
       });
-      findNearestAirport(heistLocation, function(airport) {
-        // console.log("airport: " + airport);
-        calculateAndDisplayRouteToAirport(airportDirectionsService, airportDirectionsDisplay);
-      });
-    // } else if(!!heistLocation && (!endLocation)){
-    //   endLocation = event.latLng;
-    //   console.log('End selected' + endLocation);
-    //   calculateAndDisplayRoute(directionsService, directionsDisplay, heistLocation);
-    }
-     
+
+    }     
   });
 }
 
-// function airportMarkerListener(marker) {
-//   google.maps.event.addListener(marker, 'click', function(event) {
-//     if (!!heistLocation && (!endLocation)){
-//       endLocation = event.latLng;
-//       console.log('End selected' + endLocation);
-//       calculateAndDisplayRoute(directionsService, directionsDisplay);
-//     } else {
-//       console.log(event.latLng);
-//     }; 
-//   });
-// }
-
 function createMarker(searchResult, type) {
 
-  // var color = type === "bank" ? "yellow" : 'jewelry_store' ? "red" : 'airport' ? "blue" }
   var color;
-  // Marker Color Selection
-  // bank = yellow, jewelry_store = red, police = green, airport = blue
   if(type === 'bank') {
     image = "../images/bank.png";
   } else if (type === 'jewelry_store'){
@@ -456,7 +314,6 @@ function createMarker(searchResult, type) {
   } else if (type === 'police') {
     image = "../images/police.png";
   } else {
-    // airport
     image = "../images/airport.png";
   }
 
@@ -469,10 +326,8 @@ function createMarker(searchResult, type) {
 
   if(type === 'bank' || type === 'jewelry_store') {
     heistMarkerListener(marker);  
-  } // else if(type === 'airport') {
-  //   airportMarkerListener(marker);
-  // }
-  // markerListener(marker);
+  } 
+
   marker.addListener('click', toggleBounce);
   return marker;
 
@@ -485,6 +340,128 @@ function createMarker(searchResult, type) {
   }
 
 }
+
+function moveMarker(map, marker, latlng) {
+    marker.setPosition(latlng);
+    // map.panTo(latlng);
+  }
+
+  function autoRefresh(map, pathCoords, speed, image, color) {
+    var i, route, marker;
+    route = new google.maps.Polyline({
+      path: [],
+      geodesic : true,
+      strokeColor: color,
+      strokeOpacity: 1.0,
+      strokeWeight: 10,
+      editable: false,
+      map: map
+    });
+    
+    marker=new google.maps.Marker({map:map, icon:image});
+
+    for (i = 0; i < pathCoords.length; i++) {       
+      setTimeout(function(coords) {
+        route.getPath().push(coords);
+        moveMarker(map, marker, coords);
+      }, speed * i, pathCoords[i]);
+      // if (!winner && i === pathCoords.length - 1) {
+      //   winner = image;
+      //   console.log("winner is: " + winner);
+      // }
+    }
+}
+
+
+function getDirectionsAndAnimate(directionService, directionDisplay, origin, destination, waypoints, speed, image, color) {
+    console.log("getting directions", origin, destination);
+
+    var request = {
+      origin:origin,
+      destination:destination,
+      waypoints: waypoints,
+      travelMode: google.maps.TravelMode.DRIVING
+    };
+
+    directionService.route(request, function(result, status) {
+      console.log("result and status", result, status);
+      if (status == google.maps.DirectionsStatus.OK) {
+          console.log("this is the request", request);
+          directionDisplay.setDirections(result);
+          console.log("Time to get to airport: " + result.routes[0].legs[0].duration.value);
+          
+          function totalDistance(route) {
+            var total= 0;
+            for (i = 0; i < route.legs.length; i++) {
+              total += route.legs[i].distance.value;
+            }
+            console.log("Total Distance to airport: " + total + "m");
+            distanceToAirport = total;
+
+
+            var criminalEstimate = Math.ceil(((distanceToAirport/1000)/80)*60)
+            $(".criminal-estimate").html("You are about " +criminalEstimate + " minutes away.")
+            var policeEstimate = Math.ceil(((distanceToAirport/1000)/90)*60)
+            $(".police-estimate").html("The police are about " +policeEstimate + " minutes way")
+
+            $(".rob").on("click", function(){
+              policeRandom = ((Math.ceil(Math.random()*100))/100);
+              while(policeRandom <= .75){
+                policeRandom = ((Math.ceil(Math.random()*100))/100);
+              }
+              criminalRandom = ((Math.ceil(Math.random()*100))/100);
+              while(criminalRandom <= .9){
+                criminalRandom = ((Math.ceil(Math.random()*100))/100);
+              }
+              var criminalTime = (distanceToAirport/1000)/(80*criminalRandom);
+
+              //minutes = policeTime*60 remainder is seconds in decimal
+              var criminalRemainder = (criminalTime*60) - (Math.floor(criminalTime*60))
+              var criminalSeconds = (Math.floor(criminalRemainder*60))
+
+              console.log("You are " + (Math.floor(criminalTime*60)) + " minutes away and " + criminalSeconds + " seconds away!");
+
+              $(".criminalTimeTag").html("You are " + (Math.floor(criminalTime*60)) + " minutes away and " + criminalSeconds + " seconds away!");
+
+
+
+              
+
+              var policeTime = (distanceToAirport/1000)/(90*policeRandom);
+              //minutes = policeTime*60 remainder is seconds in decimal
+              var policeRemainder = (policeTime*60) - (Math.floor(policeTime*60))
+              var policeSeconds = (Math.floor(policeRemainder*60))
+
+              console.log("The police are " + (Math.floor(policeTime*60)) + " minutes away and " + policeSeconds + " seconds away!");
+
+              $(".policeTimeTag").html("The police are " + (Math.floor(policeTime*60)) + " minutes away and " + policeSeconds + " seconds away!");
+
+
+
+
+              if(policeTime < criminalTime){
+                //win
+                $(".win-or-lose").html("The police find you on your way to the aiport. YOU LOSE");
+              } else if(criminalTime < policeTime){
+                //lose
+                $(".win-or-lose").html("YOU WIN");
+              } else if(policeTime = criminalTime){
+                //meet the police
+                $(".win-or-lose").html("You meet the police at the airport!");
+              } else {
+                console.error("Something went wrong when determining who wins");
+              }
+            })
+          }
+          totalDistance(result.routes[0]);
+          autoRefresh(map, result.routes[0].overview_path, speed, image, color);
+        } else {
+          window.alert('Directions request failed due to ' + status);
+      }
+    });
+      
+}
+
 }
 
 
