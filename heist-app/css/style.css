@@ -1,13 +1,18 @@
+@font-face {
+  font-family: pricedown;
+  src: url("../fonts/pricedown.ttf"); }
 body {
-  background-color: #020202; }
+  background-color: #020202;
+  font-family: Dosis; }
 
-form {
-  background-color: red;
-  width: 60%;
-  position: absolute;
-  top: 50px;
-  left: 50%;
-  margin-left: -30%; }
+.button {
+  font-family: Dosis; }
+
+button {
+  font-family: Dosis; }
+
+input {
+  font-family: Dosis; }
 
 .background {
   height: 100vh;
@@ -28,6 +33,14 @@ form {
   position: absolute;
   z-index: 2; }
 
+.navbar-fade {
+  position: absolute;
+  z-index: 1;
+  width: 100vw;
+  top: 0;
+  padding: 10px 0 30px 0;
+  background-image: linear-gradient(black, transparent); }
+
 .navbar {
   position: absolute;
   z-index: 99;
@@ -35,7 +48,8 @@ form {
   top: 10px; }
   .navbar li {
     display: inline;
-    margin: 0 10px; }
+    margin: 0 10px;
+    z-index: 3; }
     .navbar li a {
       color: #F2F2F2; }
 
@@ -51,7 +65,9 @@ form {
   .title h1 {
     font-size: 100px;
     color: #F2F2F2;
-    margin: 30px 0 0 0; }
+    margin: 30px 0 0 0;
+    font-family: pricedown;
+    text-shadow: -5px 0 black, 0 5px black, 5px 0 black, 0 -5px black; }
     @media screen and (max-width: 600px) {
       .title h1 {
         font-size: 80px;
@@ -115,12 +131,24 @@ form {
       .title p {
         font-size: 20px; } }
 
-form .form-control {
-  margin: 0; }
-form button {
-  height: 37px;
-  line-height: 0;
-  margin: 20px 0; }
+form {
+  background-color: #2C2C2C;
+  border-radius: 1px;
+  width: 60%;
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  margin-left: -30%;
+  box-shadow: 0px 0px 20px #2F2F2F; }
+  form .form-control {
+    margin: 0; }
+  form button {
+    height: 37px;
+    line-height: 0;
+    margin: 20px 0;
+    background-color: #3F3F3F; }
+    form button:hover {
+      background-color: #4F4F4F; }
 
 .center-form {
   margin: 20px 0 0 0; }
@@ -147,16 +175,34 @@ html, body, main {
 
 #floating-panel {
   position: absolute;
-  top: 50px;
+  top: 10px;
   left: 10px;
   z-index: 5;
-  background-color: #fff;
-  padding: 5px;
-  border: 1px solid #999;
-  text-align: center;
-  font-family: 'Roboto' 'sans-serif';
-  line-height: 30px;
-  padding-left: 10px; }
+  background-color: #F2F2F2;
+  height: 50px;
+  width: 305px; }
+  #floating-panel .location-search {
+    position: absolute;
+    left: 0;
+    top: 0; }
+    #floating-panel .location-search input {
+      width: 220px;
+      padding: 0 0 0 20px;
+      height: 50px;
+      background-color: #F2F2F2;
+      border: 0; }
+  #floating-panel .location-button {
+    position: absolute;
+    right: 0;
+    bottom: 0; }
+  #floating-panel input#submit {
+    color: #020202;
+    height: 50px;
+    border: 0;
+    background-color: #C2C2C2;
+    margin: 0; }
+    #floating-panel input#submit:hover {
+      background-color: grey; }
 
 .first-input {
   margin: 30px 0 0 0; }

@@ -1,14 +1,23 @@
+@font-face {
+  font-family: pricedown;
+  src: url('../fonts/pricedown.ttf');
+} 
+
 body{
   background-color: #020202;
+  font-family: Dosis;
 }
 
-form{
-  background-color:red;
-  width: 60%;
-  position:absolute;
-  top: 50px;
-  left: 50%;
-  margin-left: -30%;
+.button{
+  font-family: Dosis;
+}
+
+button{
+  font-family: Dosis;
+}
+
+input{
+  font-family: Dosis;
 }
 
 .background{
@@ -31,6 +40,15 @@ form{
   z-index: 2;
 }
 
+.navbar-fade{
+  position: absolute;
+  z-index: 1;
+  width: 100vw;
+  top: 0;
+  padding: 10px 0 30px 0;
+  background-image: linear-gradient(black, rgba(0,0,0,0));
+}
+
 .navbar{
   position: absolute;
   z-index: 99;
@@ -39,6 +57,7 @@ form{
   li{
     display: inline;
     margin: 0 10px;
+    z-index: 3;
     a{
       color: #F2F2F2;
     }
@@ -58,6 +77,8 @@ form{
     font-size: 100px;
     color: #F2F2F2;
     margin: 30px 0 0 0;
+    font-family: pricedown;
+    text-shadow: -5px 0 black, 0 5px black, 5px 0 black, 0 -5px black;
     @media screen and (max-width: 600px) {
       font-size: 80px;
       margin: 50px 0 0 0;
@@ -128,6 +149,14 @@ form{
 }
 
 form{
+  background-color:#2C2C2C;
+  border-radius: 1px;
+  width: 60%;
+  position:absolute;
+  top: 50px;
+  left: 50%;
+  margin-left: -30%;
+  box-shadow: 0px 0px 20px #2F2F2F;
   .form-control{
     margin: 0;
   }
@@ -135,6 +164,10 @@ form{
     height: 37px;
     line-height: 0;
     margin: 20px 0;
+    background-color: #3F3F3F;
+    &:hover{
+      background-color: #4F4F4F;   
+    }
   }
 }
 
@@ -168,16 +201,39 @@ html, body, main {
 
 #floating-panel {
   position: absolute;
-  top: 50px;
+  top: 10px;
   left: 10px;
   z-index: 5;
-  background-color: #fff;
-  padding: 5px;
-  border: 1px solid #999;
-  text-align: center;
-  font-family: 'Roboto' 'sans-serif';
-  line-height: 30px;
-  padding-left: 10px;
+  background-color: #F2F2F2;
+  height: 50px;
+  width: 305px;
+  .location-search{
+    position:absolute;
+    left: 0;
+    top: 0;
+    input{
+      width: 220px;
+      padding: 0 0 0 20px;
+      height: 50px;
+      background-color: #F2F2F2;
+      border: 0;
+    }
+  }
+  .location-button{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }
+  input#submit{
+    color: #020202;
+    height: 50px;
+    border: 0;
+    background-color: #C2C2C2;
+    margin: 0;
+    &:hover{
+      background-color: grey;
+    }
+  }
 }
 
 .first-input{

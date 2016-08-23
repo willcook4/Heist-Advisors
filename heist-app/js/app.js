@@ -63,7 +63,6 @@ HeistApp.loadPage = function() {
   var templateName = $(this).data('template');
   HeistApp.getTemplate(templateName);
   if(templateName === 'game') {
-    HeistApp.initGame();
   }
 }
 

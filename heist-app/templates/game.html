@@ -1,6 +1,10 @@
 <div id="floating-panel">
-  <input id="address" type="textbox" value="London, UK">
-  <input id="submit" type="button" value="Geocode">
+  <div class="location-search">
+    <input id="address" type="textbox" value="London, UK">
+  </div>
+  <div class="location-button">
+    <input class="button tiny" id="submit" type="button" value="Geocode">
+  </div>
 </div>
 
 <div id="map"></div>
@@ -31,6 +35,11 @@ function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 13,
     center: {lat: 51.515081, lng: -0.071966},
+    mapTypeControl: true,
+    mapTypeControlOptions: {
+      style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+      position: google.maps.ControlPosition.RIGHT_TOP
+    },
     styles: [{"featureType":"all","elementType":"labels.text.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"color":"#000000"},{"lightness":13}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#144b53"},{"lightness":14},{"weight":1.4}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#08304b"}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#0c4152"},{"lightness":5}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#0b434f"},{"lightness":25}]},{"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"road.arterial","elementType":"geometry.stroke","stylers":[{"color":"#0b3d51"},{"lightness":16}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"}]},{"featureType":"transit","elementType":"all","stylers":[{"color":"#146474"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#021019"}]}]
   });
   
@@ -192,22 +201,22 @@ function createMarker(searchResult, type) {
   // Marker Color Selection
   // bank = yellow, jewelry_store = red, police = green, airport = blue
   if(type === 'bank') {
-    color = 'yellow';
+    image = "../images/bank.png";
   }
   else if (type === 'jewelry_store'){
-    color = 'red';
+    image = "../images/jewelry.png";
   } else if (type === 'police') {
-    color = 'green';
+    image = "../images/police.png";
   } else {
     // airport
-    color = 'blue';
+    image = "../images/airport.png";
   }
 
   var marker = new google.maps.Marker({
     position: searchResult.geometry.location,
     map: map,
     animation: google.maps.Animation.DROP,
-    icon: "http://maps.google.com/mapfiles/ms/icons/" + color + "-dot.png"
+    icon: image
   });
   
   markerListener(marker);
@@ -224,9 +233,9 @@ function createMarker(searchResult, type) {
 
 }
 
-  
 
 
 }
+
 
 </script>
