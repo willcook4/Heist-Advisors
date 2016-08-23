@@ -83,8 +83,9 @@ function initMap() {
         console.log("waypoints", waypoints);
         var speed = 90;
         var image = "../images/policecar.png";
+        var color = '#FF0000';
         while(airportLatLng === undefined) {};
-        getDirectionsAndAnimate(policeDirectionService, policeDirectionDisplay, policeStation, airportLatLng, waypoints, speed, image);
+        getDirectionsAndAnimate(policeDirectionService, policeDirectionDisplay, policeStation, airportLatLng, waypoints, speed, image, color);
 
         console.log("Time for Police to arrive: " + response.routes[0].legs[0].duration.value);
 
@@ -122,7 +123,8 @@ function initMap() {
         var waypoints = [];
         var speed = 100;
         var image = "../images/criminal_car.png";
-        getDirectionsAndAnimate(airportDirectionService, airportDirectionDisplay, heistLocation, airportLatLng, waypoints, speed, image);
+        var color = '#0000FF';
+        getDirectionsAndAnimate(airportDirectionService, airportDirectionDisplay, heistLocation, airportLatLng, waypoints, speed, image, color);
         }
     });
   }  
@@ -315,9 +317,8 @@ function initMap() {
     // map.panTo(latlng);
   }
 
-  function autoRefresh(map, pathCoords, speed, image) {
+  function autoRefresh(map, pathCoords, speed, image, color) {
     var i, route, marker;
-    var color = '#FF0000';
     route = new google.maps.Polyline({
       path: [],
       geodesic : true,
@@ -334,15 +335,15 @@ function initMap() {
       setTimeout(function(coords) {
         route.getPath().push(coords);
         moveMarker(map, marker, coords);
-        if (!winner && i === pathCoords.length - 1) {
-          winner = image;
-          console.log("winner is: " + winner);
-        }
       }, speed * i, pathCoords[i]);
+      // if (!winner && i === pathCoords.length - 1) {
+      //   winner = image;
+      //   console.log("winner is: " + winner);
+      // }
     }
   }
   
-  function getDirectionsAndAnimate(directionService, directionDisplay, origin, destination, waypoints, speed, image) {
+  function getDirectionsAndAnimate(directionService, directionDisplay, origin, destination, waypoints, speed, image, color) {
     console.log("getting directions", origin, destination);
 
     var request = {
@@ -367,7 +368,7 @@ function initMap() {
             console.log("Total Distance to airport: " + total);
           }
           totalDistance(result.routes[0]);
-          autoRefresh(map, result.routes[0].overview_path, speed, image);
+          autoRefresh(map, result.routes[0].overview_path, speed, image, color);
         } else {
           window.alert('Directions request failed due to ' + status);
         }
