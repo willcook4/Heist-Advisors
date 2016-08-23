@@ -1,14 +1,33 @@
-<div id="floating-panel">
-  <div class="location-search">
-    <input id="address" type="textbox" value="London, UK">
-  </div>
-  <div class="location-button">
-    <input class="button tiny" id="submit" type="button" value="Geocode">
-  </div>
-</div>
+
 <div id="directions-panel" class="hidden"></div>
 <div id="map"></div>
 
+<div class="side-panel">
+  <div id="floating-panel">
+    <div class="location-search">
+      <input id="address" type="textbox" value="London, UK">
+    </div>
+    <div class="location-button">
+      <input class="button tiny" id="submit" type="button" value="Geocode">
+    </div>
+  </div>
+  <div class="heist-photo">heist photo</div>
+  <div class="risk-reward">
+  </div>
+  <div class="estimates">
+    <div class="police-estimate"></div>
+    <div class="criminal-estimate"></div>
+    <div class="rob">Rob The Place!</div>
+  </div>
+  <div class="results">
+    <p class="criminalTimeTag">
+    </p> 
+    <br>
+    <p class="policeTimeTag">
+    </p>
+    <div class="win-or-lose"></div>
+  </div>
+</div>
 
 <script>
 // document.addEventListener("DOMContentLoaded", function() {
@@ -22,7 +41,10 @@ var endLocation;
 var mapCenterLatLng;
 var map;
 var marker;
-
+var distanceToAirport;
+var criminalRandom;
+var policeDistanceToHiest;
+var policeRandom;
 
 var jewelryStores = [];
 var banks = [];
@@ -106,6 +128,9 @@ function calculateAndDisplayRouteForPolice(policeDirectionsService, policeDirect
     if (status === 'OK') {
       // console.log("status okay");
       policeDirectionsDisplay = new google.maps.DirectionsRenderer();
+      policeDirectionsDisplay.setOptions({
+        preserveViewport: true
+      });
       policeDirectionsDisplay.setMap(map);
       policeDirectionsDisplay.setDirections(response);
 
@@ -118,6 +143,8 @@ function calculateAndDisplayRouteForPolice(policeDirectionsService, policeDirect
           total += route.legs[i].distance.value;
         }
         console.log("Total Distance for Police to the Heist: " + total);
+        policeDistanceToHiest = total;
+
       }
       totalDistance(response.routes[0]);
 
@@ -151,6 +178,9 @@ function calculateAndDisplayRouteToAirport(airportDirectionsService, airportDire
       }, function(response, status) {
         if (status === 'OK') {
           airportDirectionsDisplay = new google.maps.DirectionsRenderer();
+          airportDirectionsDisplay.setOptions({
+            preserveViewport: true
+          });
           airportDirectionsDisplay.setMap(map);
           airportDirectionsDisplay.setDirections(response);
           console.log(response);
@@ -161,7 +191,66 @@ function calculateAndDisplayRouteToAirport(airportDirectionsService, airportDire
             for (i = 0; i < route.legs.length; i++) {
               total += route.legs[i].distance.value;
             }
-            console.log("Total Distance to airport: " + total);
+            console.log("Total Distance to airport: " + total+"m");
+            distanceToAirport = total;
+
+
+            var criminalEstimate = Math.ceil(((distanceToAirport/1000)/80)*60)
+            $(".criminal-estimate").html("You are about " +criminalEstimate + " minutes away.")
+            var policeEstimate = Math.ceil(((distanceToAirport/1000)/90)*60)
+            $(".police-estimate").html("The police are about " +policeEstimate + " minutes way")
+
+            $(".rob").on("click", function(){
+              policeRandom = ((Math.ceil(Math.random()*100))/100);
+              while(policeRandom <= .75){
+                policeRandom = ((Math.ceil(Math.random()*100))/100);
+              }
+              criminalRandom = ((Math.ceil(Math.random()*100))/100);
+              while(criminalRandom <= .9){
+                criminalRandom = ((Math.ceil(Math.random()*100))/100);
+              }
+              var criminalTime = (distanceToAirport/1000)/(80*criminalRandom);
+
+              //minutes = policeTime*60 remainder is seconds in decimal
+              var criminalRemainder = (criminalTime*60) - (Math.floor(criminalTime*60))
+              var criminalSeconds = (Math.floor(criminalRemainder*60))
+
+              console.log("You are " + (Math.floor(criminalTime*60)) + " minutes away and " + criminalSeconds + " seconds away!");
+
+              $(".criminalTimeTag").html("You are " + (Math.floor(criminalTime*60)) + " minutes away and " + criminalSeconds + " seconds away!");
+
+
+
+              
+
+              var policeTime = (distanceToAirport/1000)/(90*policeRandom);
+              //minutes = policeTime*60 remainder is seconds in decimal
+              var policeRemainder = (policeTime*60) - (Math.floor(policeTime*60))
+              var policeSeconds = (Math.floor(policeRemainder*60))
+
+              console.log("The police are " + (Math.floor(policeTime*60)) + " minutes away and " + policeSeconds + " seconds away!");
+
+              $(".policeTimeTag").html("The police are " + (Math.floor(policeTime*60)) + " minutes away and " + policeSeconds + " seconds away!");
+
+
+
+
+              if(policeTime < criminalTime){
+                //win
+                $(".win-or-lose").html("The police find you on your way to the aiport. YOU LOSE");
+              } else if(criminalTime < policeTime){
+                //lose
+                $(".win-or-lose").html("YOU WIN");
+              } else if(policeTime = criminalTime){
+                //meet the police
+                $(".win-or-lose").html("You meet the police at the airport!");
+              } else {
+                console.error("Something went wrong when determining who wins");
+              }
+            })
+
+            
+
           }
           totalDistance(response.routes[0]);
         } else {
@@ -396,10 +485,11 @@ function createMarker(searchResult, type) {
   }
 
 }
-
-
-
 }
+
+
+
+
 
 
 </script>
