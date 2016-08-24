@@ -18,6 +18,7 @@ var airports = [];
 var criminalsRouteSetupInfo;
 var policeRouteSetupInfo;
 var panorama;
+var currentMarker;
 
 function initMap() {
   console.log("initializing");
@@ -264,6 +265,19 @@ function initMap() {
   }
   function heistMarkerListener(marker) {
     marker.addListener('click', function(event) {
+      if (currentMarker !== undefined) {
+        currentMarker.setAnimation(null);  
+      }
+      
+      currentMarker = this;
+      if(policeRouteSetupInfo !== undefined && criminalsRouteSetupInfo !== undefined) {
+        policeRouteSetupInfo.directionDisplay.setMap(null);
+        policeRouteSetupInfo = undefined;  
+        criminalsRouteSetupInfo.directionDisplay.setMap(null);
+        criminalsRouteSetupInfo = undefined;  
+        console.log("should be undefined" ,criminalsRouteSetupInfo, policeRouteSetupInfo);
+      }
+      heistLocation = undefined;
       if (!heistLocation) {
         heistLocation = event.latLng;
         console.log('Start selected', event.latLng.lat(), event.latLng.lng());
