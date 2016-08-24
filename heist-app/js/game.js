@@ -56,7 +56,7 @@ function initMap() {
     policeDirectionsService = new google.maps.DirectionsService();
     policeDirectionsDisplay = new google.maps.DirectionsRenderer({
       polylineOptions: {
-        strokeColor: "#FFC300",
+        strokeColor: "#FFFFFF",
         strokeOpacity: .4,
         strokeWeight: 5,
         zIndex: 20
@@ -289,6 +289,8 @@ function initMap() {
 
       var panorama = new google.maps.StreetViewPanorama(
         document.getElementById('pano'), {
+          disableDefaultUI: true,
+          fullscreenControl: true,
           position: heistLocation,
           pov: {
             heading: 34,
