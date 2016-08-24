@@ -21,10 +21,16 @@ input{
 }
 
 .background{
-  height: 100vh;
-  width: 100vw;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -100;
+  transform: translateX(-50%) translateY(-50%);
   background-color: black;
-  background-image: url("../images/promo1.jpg");
   background-size: cover;
   -webkit-filter: blur(3px);
   -moz-filter: blur(3px);
@@ -247,9 +253,63 @@ html, body, main {
 }
 
 .results{
-  height: 250px;
+  height: 145px;
   width: 305px;
   background-color: lighten(orange, 10%);
+  .criminal-time-tag{
+    width: 100%;
+    height: 40px;
+    background-color: red;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    background-color: #F2F2F2;
+    p{
+      padding: 0 20px;
+    }
+  }
+  .police-time-tag{
+    width: 100%;
+    height: 40px;
+    background-color: blue;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    background-color: grey;
+    p{
+      padding: 0 20px;
+    }
+  }
+  .win-or-lose{
+    height: 65px;
+    width: 100%;
+    background-color: orange;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    background-color: #020202;
+    p{
+      color: white;
+      font-size: 25px;
+      padding: 0 10px;
+    }
+  }
+}
+
+@-webkit-keyframes WinPercentColorChange {
+    0% {background-color:blue;}
+    33.333% {background-color:red;}
+    66.666% {background-color:red;}
+    100% {background-color:blue;}
+}
+@-webkit-keyframes WinMoneyColorChange {
+    0% {background-color:red;}
+    33.333% {background-color:blue;}
+    66.666% {background-color:blue;}
+    100% {background-color:red;}
 }
 
 .estimates{
@@ -257,6 +317,73 @@ html, body, main {
   width: 305px;
   background-color: green;
   margin: 0 0 10px 0;
+  .win-percent{
+    -webkit-animation:WinPercentColorChange 1s infinite;
+    float: left;
+    height: 70px;
+    width: 37.5%;
+    font-size: 40px;
+    font-weight: 900;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+  .vs{
+    width: 25%;
+    height: 70px;
+    position: absolute;
+    top: 270px;
+    left: 37.5%;
+    background-color: #F2F2F2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    font-size: 35px;
+  }
+  .win-money{
+    -webkit-animation:WinMoneyColorChange 1s infinite;
+    height: 70px;
+    width: 37.5%;
+    float: right;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+  .rob{
+    background-color: black;
+    color:white;
+    width: 100%;
+    position: absolute;
+    bottom: 157px;
+    padding: 20px 0;
+    font-size: 35px;
+    cursor: pointer;
+  }
+  .police-estimate{
+    background-color: white;
+    width: 100%;
+    height: 52px;
+    position: absolute;
+    bottom: 285px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+  .criminal-estimate{
+    background-color: grey;
+    width: 100%;
+    height: 53px;
+    position: absolute;
+    bottom: 232px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
 }
 
 .win-or-lose{
@@ -266,7 +393,6 @@ html, body, main {
 .side-panel{
   width: 305px;
   height: 97.5vh;
-  background-color: red;
   position: absolute;
   left: 10px;
   top: 10px;

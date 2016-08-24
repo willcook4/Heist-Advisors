@@ -312,47 +312,74 @@ function initMap() {
     for (i = 0; i < route.legs.length; i++) {
       total += route.legs[i].distance.value;
     }
-    console.log("Total Distance to airport: " + total + "m");
-    distanceToAirport = total;
-    var criminalEstimate = Math.ceil(((distanceToAirport/1000)/80)*60)
-    $(".criminal-estimate").html("You are about " +criminalEstimate + " minutes away.")
-    var policeEstimate = Math.ceil(((distanceToAirport/1000)/90)*60)
-    $(".police-estimate").html("The police are about " +policeEstimate + " minutes way")
-    $(".rob").on("click", function(){
-      policeRandom = ((Math.ceil(Math.random()*100))/100);
-      while(policeRandom <= .75){
-        policeRandom = ((Math.ceil(Math.random()*100))/100);
-      }
-      criminalRandom = ((Math.ceil(Math.random()*100))/100);
-      while(criminalRandom <= .9){
-        criminalRandom = ((Math.ceil(Math.random()*100))/100);
-      }
-      var criminalTime = (distanceToAirport/1000)/(80*criminalRandom);
-      //minutes = policeTime*60 remainder is seconds in decimal
-      var criminalRemainder = (criminalTime*60) - (Math.floor(criminalTime*60))
-      var criminalSeconds = (Math.floor(criminalRemainder*60))
-      console.log("You are " + (Math.floor(criminalTime*60)) + " minutes away and " + criminalSeconds + " seconds away!");
-      $(".criminalTimeTag").html("You are " + (Math.floor(criminalTime*60)) + " minutes away and " + criminalSeconds + " seconds away!");
-      
-      var policeTime = (distanceToAirport/1000)/(90*policeRandom);
-      //minutes = policeTime*60 remainder is seconds in decimal
-      var policeRemainder = (policeTime*60) - (Math.floor(policeTime*60))
-      var policeSeconds = (Math.floor(policeRemainder*60))
-      console.log("The police are " + (Math.floor(policeTime*60)) + " minutes away and " + policeSeconds + " seconds away!");
-      $(".policeTimeTag").html("The police are " + (Math.floor(policeTime*60)) + " minutes away and " + policeSeconds + " seconds away!");
-      if(policeTime < criminalTime){
-        //win
-        $(".win-or-lose").html("The police find you on your way to the aiport. YOU LOSE");
-      } else if(criminalTime < policeTime){
-        //lose
-        $(".win-or-lose").html("YOU WIN");
-      } else if(policeTime = criminalTime){
-        //meet the police
-        $(".win-or-lose").html("You meet the police at the airport!");
-      } else {
-        console.error("Something went wrong when determining who wins");
-      }
-    })
+      console.log("Total Distance to airport: " + total + "m");
+      distanceToAirport = total;
+      var criminalEstimate = Math.ceil(((distanceToAirport/1000)/80)*60);
+      $(".criminal-estimate").html("You are about " +criminalEstimate + " minutes away.");
+      var policeEstimate = Math.ceil((((distanceToAirport+policeDistanceToHiest)/1000)/90)*60);
+      $(".police-estimate").html("The police are about " +policeEstimate + " minutes way");
+
+      var winPercent = Math.floor((policeEstimate/criminalEstimate)*100)-30
+      var winPercentModifier = Math.floor((Math.random()*10))
+      if(Math.random()<.49999){
+       $(".win-percent").html((winPercent-winPercentModifier)+"%")
+     } else {
+       $(".win-percent").html(((winPercent-winPercentModifier)-10)+"%")
+     }
+
+     if((winPercent-winPercentModifier)<10){
+       $(".win-money").html("$100 million");
+     }else if((winPercent-winPercentModifier)<30){
+       $(".win-money").html("$50 million");
+     }else if((winPercent-winPercentModifier)<50){
+       $(".win-money").html("$10 million");
+     }else if((winPercent-winPercentModifier)<70){
+       $(".win-money").html("$1 million");
+     }else if((winPercent-winPercentModifier)<90){
+       $(".win-money").html("$250 thousand");
+     }else if((winPercent-winPercentModifier)<95){
+       $(".win-money").html("$100 thousand");
+     }else{
+       $(".win-money").html("$10 thousand");
+     }
+
+
+
+     $(".rob").on("click", function(){
+       policeRandom = ((Math.ceil(Math.random()*100))/100);
+       while(policeRandom <= .75){
+         policeRandom = ((Math.ceil(Math.random()*100))/100);
+       }
+       criminalRandom = ((Math.ceil(Math.random()*100))/100);
+       while(criminalRandom <= .9){
+         criminalRandom = ((Math.ceil(Math.random()*100))/100);
+       }
+       var criminalTime = (distanceToAirport/1000)/(80*criminalRandom);
+     //minutes = policeTime*60 remainder is seconds in decimal
+     var criminalRemainder = (criminalTime*60) - (Math.floor(criminalTime*60))
+     var criminalSeconds = (Math.floor(criminalRemainder*60))
+     console.log("You are " + (Math.floor(criminalTime*60)) + " minutes away and " + criminalSeconds + " seconds away!");
+     $(".criminal-time-tag").html("<p>You make it to the airport in " + (Math.floor(criminalTime*60)) + " minutes and " + criminalSeconds + " seconds!</p>");
+     
+     var policeTime = ((distanceToAirport+policeDistanceToHiest)/1000)/(90*policeRandom);
+     //minutes = policeTime*60 remainder is seconds in decimal
+     var policeRemainder = (policeTime*60) - (Math.floor(policeTime*60))
+     var policeSeconds = (Math.floor(policeRemainder*60))
+
+     $(".police-time-tag").html("<p>The police make it to the airport in " + (Math.floor(policeTime*60)) + " minutes and " + policeSeconds + " seconds!</p>");
+     if(policeTime < criminalTime){
+       //win
+       $(".win-or-lose").html("<p>YOU HAVE BEEN CAUGHT</p>");
+     } else if(criminalTime < policeTime){
+       //lose
+       $(".win-or-lose").html("<p>YOU GET AWAY WITH ALL THE CASH!</p>");
+     } else if(policeTime = criminalTime){
+       //meet the police
+       $(".win-or-lose").html("<p>YOU MEET THE POLICE AT THE AIRPORT!</p>");
+     } else {
+       console.error("Something went wrong when determining who wins");
+     }
+   })
   }
 
   function getDirectionsAndDisplay(routeSetupInfo) {
