@@ -222,6 +222,45 @@ html, body, main {
   width: 305px;
   background-color: green;
   margin: 0 0 10px 0; }
+  .estimates .win-percent {
+    background-color: blue;
+    float: left;
+    height: 70px;
+    width: 40%;
+    font-size: 40px;
+    font-weight: 900;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center; }
+  .estimates .win-money {
+    background-color: blue;
+    height: 70px;
+    width: 40%;
+    float: right;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center; }
+  .estimates .rob {
+    background-color: blue;
+    width: 100%;
+    position: absolute;
+    bottom: 157px;
+    padding: 20px 0;
+    font-size: 35px; }
+  .estimates .police-estimate {
+    background-color: white;
+    width: 100%;
+    height: 52px;
+    position: absolute;
+    bottom: 285px; }
+  .estimates .criminal-estimate {
+    background-color: grey;
+    width: 100%;
+    height: 53px;
+    position: absolute;
+    bottom: 232px; }
 
 .win-or-lose {
   background-color: red; }
