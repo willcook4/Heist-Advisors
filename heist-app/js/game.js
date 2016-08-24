@@ -1,23 +1,6 @@
 console.log("js loaded");
 initMap();
-var policeStartLocation;
-var endLocation;
-var mapCenterLatLng;
-var map;
-var marker;
-var airportLatLng;
-var winner;
-var distanceToAirport;
-var criminalRandom;
-var policeDistanceToHiest;
-var policeRandom;
-var jewelryStores = [];
-var banks = [];
-var policeStations = [];
-var airports = [];
-var criminalsRouteSetupInfo;
-var policeRouteSetupInfo;
-var panorama;
+var policeStartLocation, endLocation, mapCenterLatLng, map, marker, airportLatLng, winner, distanceToAirport, criminalRandom, policeDistanceToHiest, policeRandom, jewelryStores = [], banks = [], policeStations = [], airports = [], criminalsRouteSetupInfo, policeRouteSetupInfo, panorama;
 
 function initMap() {
   console.log("initializing");
@@ -70,8 +53,8 @@ function initMap() {
     var waypoints = [{ location: heistLocation, stopover: false }];
     console.log("waypoints", waypoints);
     var speed = 90;
-    var image = "../images/policecar.png";
-    var color = "#FF0000"
+    var image = "../images/g342.png";
+    var color = "#FF0000";
     // getDirectionsAndDisplay(policeDirectionsService, policeDirectionsDisplay, policeStation, airportLatLng, waypoints, speed, image, color);
     // console.log("route info for police: ", { directionService: policeDirectionsService, directionDisplay: policeDirectionsDisplay, origin: policeStation, destination: airportLatLng, waypoints: waypoints, speed: speed, image: image, color: color});
     policeRouteSetupInfo = { directionService: policeDirectionsService, directionDisplay: policeDirectionsDisplay, origin: policeStation, destination: airportLatLng, waypoints: waypoints, speed: speed, image: image, color: color};
@@ -201,7 +184,39 @@ function initMap() {
         console.log("Bad search");
       }
     });
+
+    var distances = [];
+    
+    for (i=0; i<policeStations.length; i++) {
+      policeStationLatLng = new google.maps.LatLng({lat: policeStations[i].position.lat(), lng: policeStations[i].position.lng()}); 
+      console.log("Heist Location: ", heistLocation);
+      console.log("policeStationLatLng: ",policeStationLatLng);
+
+      distanceAndPolice = ({ 
+        distance: google.maps.geometry.spherical.computeDistanceBetween(policeStationLatLng , heistLocation), 
+        theMadPoPo: policeStations[i] 
+      });
+      console.log("distanceAndPolice", distanceAndPolice);
+      distances.push(distanceAndPolice);
+    }
+    console.log("Police Stations: ", policeStations);
+    distances = distances.sort(function(a, b) {
+      return a.distance - b.distance;
+    });
+    console.log("Look at meeeeeeeeee !!!!!", distances[0].theMadPoPo.position.lat());
+    var tempStation = distances[0];
+    console.log("Temp Station", tempStation.theMadPoPo);
+    console.log("Distances array: ", distances);
   }
+
+
+heistLocation = false;
+
+if (!heistLocation){}
+
+heistLocation = true 
+
+
   function findNearestAirport(heistLocation, callback) {
     console.log("HeistLocation" + heistLocation);
     var request = {
@@ -220,6 +235,7 @@ function initMap() {
   }
   function heistMarkerListener(marker) {
     marker.addListener('click', function(event) {
+
       if (!heistLocation) {
         heistLocation = event.latLng;
         console.log('Start selected', event.latLng.lat(), event.latLng.lng());
@@ -239,6 +255,8 @@ function initMap() {
 
       var panorama = new google.maps.StreetViewPanorama(
         document.getElementById('pano'), {
+          disableDefaultUI: true,
+          fullScreenControl: true,
           position: heistLocation,
           pov: {
             heading: 34,
