@@ -17,7 +17,7 @@ var policeStations = [];
 var airports = [];
 var criminalsRouteSetupInfo;
 var policeRouteSetupInfo;
-
+var panorama;
 
 function initMap() {
   console.log("initializing");
@@ -55,7 +55,14 @@ function initMap() {
     console.log("Police station start point: " + startPlace.geometry.location);
     var policeStation = startPlace.geometry.location
     policeDirectionsService = new google.maps.DirectionsService();
-    policeDirectionsDisplay = new google.maps.DirectionsRenderer();
+    policeDirectionsDisplay = new google.maps.DirectionsRenderer({
+      polylineOptions: {
+        strokeColor: "#FFC300",
+        strokeOpacity: .4,
+        strokeWeight: 5,
+        zIndex: 20
+      }
+    });
     policeDirectionsDisplay.setMap(map);
     policeDirectionsDisplay.setOptions({
       preserveViewport: true
@@ -83,7 +90,12 @@ function initMap() {
         airportLatLng = new google.maps.LatLng(airportLat, airportLng);
         console.log("Airport: " + airportLatLng);
         airportDirectionService = new google.maps.DirectionsService();
-        airportDirectionDisplay = new google.maps.DirectionsRenderer();
+        airportDirectionDisplay = new google.maps.DirectionsRenderer({
+          polylineOptions: {
+            strokeWeight: 5,
+            zIndex: 10
+          }
+        });
         airportDirectionDisplay.setMap(map);
         var waypoints = [];
         var speed = 100;
@@ -223,7 +235,17 @@ function initMap() {
             });
           });
         });
-      }     
+      }
+
+      var panorama = new google.maps.StreetViewPanorama(
+        document.getElementById('pano'), {
+          position: heistLocation,
+          pov: {
+            heading: 34,
+            pitch: 10
+          }
+        });
+      map.setStreetView(panorama);
     });
   }
   function createMarker(searchResult, type) {
