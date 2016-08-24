@@ -365,23 +365,23 @@ function getDirectionsAndAnimate(directionService, directionDisplay, origin, des
               var criminalRemainder = (criminalTime*60) - (Math.floor(criminalTime*60))
               var criminalSeconds = (Math.floor(criminalRemainder*60))
               console.log("You are " + (Math.floor(criminalTime*60)) + " minutes away and " + criminalSeconds + " seconds away!");
-              $(".criminalTimeTag").html("You are " + (Math.floor(criminalTime*60)) + " minutes away and " + criminalSeconds + " seconds away!");
+              $(".criminal-time-tag").html("<p>You make it to the airport in " + (Math.floor(criminalTime*60)) + " minutes and " + criminalSeconds + " seconds!</p>");
               
               var policeTime = ((distanceToAirport+policeDistanceToHiest)/1000)/(90*policeRandom);
               //minutes = policeTime*60 remainder is seconds in decimal
               var policeRemainder = (policeTime*60) - (Math.floor(policeTime*60))
               var policeSeconds = (Math.floor(policeRemainder*60))
-              console.log("The police are " + (Math.floor(policeTime*60)) + " minutes away and " + policeSeconds + " seconds away!");
-              $(".policeTimeTag").html("The police are " + (Math.floor(policeTime*60)) + " minutes away and " + policeSeconds + " seconds away!");
+   
+              $(".police-time-tag").html("<p>The police make it to the airport in " + (Math.floor(policeTime*60)) + " minutes and " + policeSeconds + " seconds!</p>");
               if(policeTime < criminalTime){
                 //win
-                $(".win-or-lose").html("The police find you on your way to the aiport. YOU LOSE");
+                $(".win-or-lose").html("<p>YOU HAVE BEEN CAUGHT</p>");
               } else if(criminalTime < policeTime){
                 //lose
-                $(".win-or-lose").html("YOU WIN");
+                $(".win-or-lose").html("<p>YOU GET AWAY WITH ALL THE CASH!</p>");
               } else if(policeTime = criminalTime){
                 //meet the police
-                $(".win-or-lose").html("You meet the police at the airport!");
+                $(".win-or-lose").html("<p>YOU MEET THE POLICE AT THE AIRPORT!</p>");
               } else {
                 console.error("Something went wrong when determining who wins");
               }
