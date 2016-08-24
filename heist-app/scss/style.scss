@@ -200,10 +200,6 @@ html, body, main {
 }
 
 #floating-panel {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 5;
   background-color: #F2F2F2;
   height: 50px;
   width: 305px;
@@ -212,7 +208,7 @@ html, body, main {
     left: 0;
     top: 0;
     input{
-      width: 220px;
+      width: 230px;
       padding: 0 0 0 20px;
       height: 50px;
       background-color: #F2F2F2;
@@ -220,9 +216,7 @@ html, body, main {
     }
   }
   .location-button{
-    position: absolute;
-    right: 0;
-    bottom: 0;
+    float: right;
   }
   input#submit{
     color: #020202;
@@ -243,4 +237,39 @@ html, body, main {
     width:420px;
     margin: 30px 0 0 -210px;
   }
+}
+
+.heist-photo{
+  height: 200px;
+  width: 305px;
+  background-color: blue;
+  margin: 10px 0;
+}
+
+.results{
+  height: 250px;
+  width: 305px;
+  background-color: lighten(orange, 10%);
+}
+
+.estimates{
+  height: 250px;
+  width: 305px;
+  background-color: green;
+  margin: 0 0 10px 0;
+}
+
+.win-or-lose{
+  background-color: red;
+}
+
+.side-panel{
+  width: 305px;
+  height: 97.5vh;
+  background-color: red;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  z-index: 99;
+  overflow-y: scroll;
 }
