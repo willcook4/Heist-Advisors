@@ -51,7 +51,7 @@ function initMap() {
     });    
   })
 
-  function setupRouteForPolice(startPlace) {
+  function setupRouteForPolice(startPlace, callback) {
     console.log("Police station start point: " + startPlace.geometry.location);
     var policeStation = startPlace.geometry.location
     policeDirectionsService = new google.maps.DirectionsService();
@@ -71,10 +71,11 @@ function initMap() {
     console.log("waypoints", waypoints);
     var speed = 90;
     var image = "../images/policecar.png";
-    var color = "#FF0000"
+    var color = "#FF0000";
     // getDirectionsAndDisplay(policeDirectionsService, policeDirectionsDisplay, policeStation, airportLatLng, waypoints, speed, image, color);
     // console.log("route info for police: ", { directionService: policeDirectionsService, directionDisplay: policeDirectionsDisplay, origin: policeStation, destination: airportLatLng, waypoints: waypoints, speed: speed, image: image, color: color});
     policeRouteSetupInfo = { directionService: policeDirectionsService, directionDisplay: policeDirectionsDisplay, origin: policeStation, destination: airportLatLng, waypoints: waypoints, speed: speed, image: image, color: color};
+    return callback();
   }
   
   function setupRouteForCriminals(callback) {
@@ -226,12 +227,18 @@ function initMap() {
         findNearestAirport(heistLocation, function(airport) {
           setupRouteForCriminals(function(){
             findNearestPoliceStation(heistLocation, function(pigShop) {
-              setupRouteForPolice(pigShop);
-              console.log("route info for police: ", policeRouteSetupInfo);
-              console.log("route info for criminals: ", criminalsRouteSetupInfo);
-              getDirectionsAndDisplay(criminalsRouteSetupInfo);
-              getDirectionsAndDisplay(policeRouteSetupInfo);
-              
+              setupRouteForPolice(pigShop, function() {
+                console.log("route info for police: ", policeRouteSetupInfo);
+                console.log("route info for criminals: ", criminalsRouteSetupInfo);
+
+                getDirectionsAndDisplay(criminalsRouteSetupInfo, function() {
+                  getDirectionsAndDisplay(policeRouteSetupInfo, function() {
+                    console.log(criminalsRouteSetupInfo.routeDistance);
+                    console.log(policeRouteSetupInfo.routeDistance);      
+                    gameLogic();
+                  });
+                });
+              });
             });
           });
         });
@@ -282,7 +289,7 @@ function initMap() {
       marker.setPosition(latlng);
       // map.panTo(latlng);
   }
-  function autoRefresh(map, pathCoords, speed, image, color) {
+  function animateRoute(map, pathCoords, speed, image, color) {
     var i, route, marker;
     route = new google.maps.Polyline({
       path: [],
@@ -300,179 +307,112 @@ function initMap() {
         route.getPath().push(coords);
         moveMarker(map, marker, coords);
       }, speed * i, pathCoords[i]);
-      // if (!winner && i === pathCoords.length - 1) {
-      //   winner = image;
-      //   console.log("winner is: " + winner);
-      // }
     }
   }
 
-  function totalDistance(route) {
+  function gameLogic() {
+    var criminalEstimate = Math.ceil((((criminalsRouteSetupInfo.routeDistance)/1000)/80)*60);
+    $(".criminal-estimate").html("You are about " +criminalEstimate + " minutes away.");
+    var policeEstimate = Math.ceil((((policeRouteSetupInfo.routeDistance)/1000)/90)*60);
+    $(".police-estimate").html("The police are about " +policeEstimate + " minutes way");
+
+    var winPercent = Math.floor((policeEstimate/criminalEstimate)*100)-30
+    var winPercentModifier = Math.floor((Math.random()*10))
+    if(Math.random()<.49999){
+     $(".win-percent").html((winPercent-winPercentModifier)+"%")
+    } else {
+     $(".win-percent").html(((winPercent-winPercentModifier)-10)+"%")
+    }
+
+    if((winPercent-winPercentModifier)<10){
+      $(".win-money").html("$100 million");
+    }else if((winPercent-winPercentModifier)<30){
+      $(".win-money").html("$50 million");
+    }else if((winPercent-winPercentModifier)<50){
+      $(".win-money").html("$10 million");
+    }else if((winPercent-winPercentModifier)<70){
+      $(".win-money").html("$1 million");
+    }else if((winPercent-winPercentModifier)<90){
+      $(".win-money").html("$250 thousand");
+    }else if((winPercent-winPercentModifier)<95){
+      $(".win-money").html("$100 thousand");
+    }else{
+      $(".win-money").html("$10 thousand");
+    }
+
+
+    $(".rob").on("click", function(){
+      policeRandom = ((Math.ceil(Math.random()*100))/100);
+      while(policeRandom <= .75){
+        policeRandom = ((Math.ceil(Math.random()*100))/100);
+      }
+      criminalRandom = ((Math.ceil(Math.random()*100))/100);
+      while(criminalRandom <= .9){
+        criminalRandom = ((Math.ceil(Math.random()*100))/100);
+      }
+      var criminalTime = ((criminalsRouteSetupInfo.routeDistance)/1000)/(80*criminalRandom);
+      //minutes = policeTime*60 remainder is seconds in decimal
+      var criminalRemainder = (criminalTime*60) - (Math.floor(criminalTime*60))
+      var criminalSeconds = (Math.floor(criminalRemainder*60))
+      console.log("You are " + (Math.floor(criminalTime*60)) + " minutes away and " + criminalSeconds + " seconds away!");
+      $(".criminal-time-tag").html("<p>You make it to the airport in " + (Math.floor(criminalTime*60)) + " minutes and " + criminalSeconds + " seconds!</p>");
+      
+      var policeTime = ((policeRouteSetupInfo.routeDistance)/1000)/(90*policeRandom);
+      //minutes = policeTime*60 remainder is seconds in decimal
+      var policeRemainder = (policeTime*60) - (Math.floor(policeTime*60))
+      var policeSeconds = (Math.floor(policeRemainder*60))
+      $(".police-time-tag").html("<p>The police make it to the airport in " + (Math.floor(policeTime*60)) + " minutes and " + policeSeconds + " seconds!</p>");
+      if(policeTime < criminalTime){
+        //win
+        $(".win-or-lose").html("<p>YOU HAVE BEEN CAUGHT</p>");
+      } else if(criminalTime < policeTime){
+        //lose
+        $(".win-or-lose").html("<p>YOU GET AWAY WITH ALL THE CASH!</p>");
+      } else if(policeTime = criminalTime){
+        //meet the police
+        $(".win-or-lose").html("<p>YOU MEET THE POLICE AT THE AIRPORT!</p>");
+      } else {
+        console.error("Something went wrong when determining who wins");
+      }
+      animateRoute(map, criminalsRouteSetupInfo.route.routes[0].overview_path, criminalsRouteSetupInfo.speed, criminalsRouteSetupInfo.image, criminalsRouteSetupInfo.color);
+      animateRoute(map, policeRouteSetupInfo.route.routes[0].overview_path, policeRouteSetupInfo.speed, policeRouteSetupInfo.image, policeRouteSetupInfo.color);
+
+    })
+  }
+
+  function totalDistance(route, routeSetupInfo) {
     var total= 0;
     for (i = 0; i < route.legs.length; i++) {
       total += route.legs[i].distance.value;
     }
-      console.log("Total Distance to airport: " + total + "m");
-      distanceToAirport = total;
-      var criminalEstimate = Math.ceil(((distanceToAirport/1000)/80)*60);
-      $(".criminal-estimate").html("You are about " +criminalEstimate + " minutes away.");
-      var policeEstimate = Math.ceil((((distanceToAirport+policeDistanceToHiest)/1000)/90)*60);
-      $(".police-estimate").html("The police are about " +policeEstimate + " minutes way");
-
-      var winPercent = Math.floor((policeEstimate/criminalEstimate)*100)-30
-      var winPercentModifier = Math.floor((Math.random()*10))
-      if(Math.random()<.49999){
-       $(".win-percent").html((winPercent-winPercentModifier)+"%")
-     } else {
-       $(".win-percent").html(((winPercent-winPercentModifier)-10)+"%")
-     }
-
-     if((winPercent-winPercentModifier)<10){
-       $(".win-money").html("$100 million");
-     }else if((winPercent-winPercentModifier)<30){
-       $(".win-money").html("$50 million");
-     }else if((winPercent-winPercentModifier)<50){
-       $(".win-money").html("$10 million");
-     }else if((winPercent-winPercentModifier)<70){
-       $(".win-money").html("$1 million");
-     }else if((winPercent-winPercentModifier)<90){
-       $(".win-money").html("$250 thousand");
-     }else if((winPercent-winPercentModifier)<95){
-       $(".win-money").html("$100 thousand");
-     }else{
-       $(".win-money").html("$10 thousand");
-     }
-
-
-
-     $(".rob").on("click", function(){
-       policeRandom = ((Math.ceil(Math.random()*100))/100);
-       while(policeRandom <= .75){
-         policeRandom = ((Math.ceil(Math.random()*100))/100);
-       }
-       criminalRandom = ((Math.ceil(Math.random()*100))/100);
-       while(criminalRandom <= .9){
-         criminalRandom = ((Math.ceil(Math.random()*100))/100);
-       }
-       var criminalTime = (distanceToAirport/1000)/(80*criminalRandom);
-     //minutes = policeTime*60 remainder is seconds in decimal
-     var criminalRemainder = (criminalTime*60) - (Math.floor(criminalTime*60))
-     var criminalSeconds = (Math.floor(criminalRemainder*60))
-     console.log("You are " + (Math.floor(criminalTime*60)) + " minutes away and " + criminalSeconds + " seconds away!");
-     $(".criminal-time-tag").html("<p>You make it to the airport in " + (Math.floor(criminalTime*60)) + " minutes and " + criminalSeconds + " seconds!</p>");
-     
-     var policeTime = ((distanceToAirport+policeDistanceToHiest)/1000)/(90*policeRandom);
-     //minutes = policeTime*60 remainder is seconds in decimal
-     var policeRemainder = (policeTime*60) - (Math.floor(policeTime*60))
-     var policeSeconds = (Math.floor(policeRemainder*60))
-
-     $(".police-time-tag").html("<p>The police make it to the airport in " + (Math.floor(policeTime*60)) + " minutes and " + policeSeconds + " seconds!</p>");
-     if(policeTime < criminalTime){
-       //win
-       $(".win-or-lose").html("<p>YOU HAVE BEEN CAUGHT</p>");
-     } else if(criminalTime < policeTime){
-       //lose
-       $(".win-or-lose").html("<p>YOU GET AWAY WITH ALL THE CASH!</p>");
-     } else if(policeTime = criminalTime){
-       //meet the police
-       $(".win-or-lose").html("<p>YOU MEET THE POLICE AT THE AIRPORT!</p>");
-     } else {
-       console.error("Something went wrong when determining who wins");
-     }
-   })
+    console.log("Total Distance to airport: " + total + "m");
+    routeSetupInfo.routeDistance = total;
   }
 
-  function getDirectionsAndDisplay(routeSetupInfo) {
-      console.log("route setup info: ", routeSetupInfo);
-      console.log("getting directions", routeSetupInfo.origin, routeSetupInfo.destination);
-      var request = {
-        origin: routeSetupInfo.origin,
-        destination: routeSetupInfo.destination,
-        waypoints: routeSetupInfo.waypoints,
-        travelMode: google.maps.TravelMode.DRIVING
-      };
-      routeSetupInfo.directionService.route(request, function(result, status) {
-        console.log("result and status", result, status);
-        if (status == google.maps.DirectionsStatus.OK) {
-            console.log("this is the request", request);
-            routeSetupInfo.directionDisplay.setDirections(result);
-            console.log("Time to get to airport: " + result.routes[0].legs[0].duration.value);
-            totalDistance(result.routes[0]);
-            autoRefresh(map, result.routes[0].overview_path, routeSetupInfo.speed, routeSetupInfo.image, routeSetupInfo.color);
-          } else {
-            window.alert('Directions request failed due to '+ routeSetupInfo.image + status);
-        }
-      });
-        
+  function getDirectionsAndDisplay(routeSetupInfo, callback) {
+    console.log("route setup info: ", routeSetupInfo);
+    console.log("getting directions", routeSetupInfo.origin, routeSetupInfo.destination);
+    var request = {
+      origin: routeSetupInfo.origin,
+      destination: routeSetupInfo.destination,
+      waypoints: routeSetupInfo.waypoints,
+      travelMode: google.maps.TravelMode.DRIVING
+    };
+    routeSetupInfo.directionService.route(request, function(result, status) {
+      console.log("result and status", result, status);
+      if (status == google.maps.DirectionsStatus.OK) {
+          console.log("this is the request", request);
+          routeSetupInfo.directionDisplay.setDirections(result);
+          console.log("Time to get to airport: " + result.routes[0].legs[0].duration.value);
+
+          totalDistance(result.routes[0], routeSetupInfo);
+          routeSetupInfo.route = result;
+          // animateRoute(map, result.routes[0].overview_path, routeSetupInfo.speed, routeSetupInfo.image, routeSetupInfo.color);
+          console.log("route property of directionsService", routeSetupInfo.directionService);
+          return callback();
+        } else {
+          window.alert('Directions request failed due to '+ routeSetupInfo.image + status);
+      }
+    });    
   }
-  // function getDirectionsAndAnimate(directionService, directionDisplay, origin, destination, waypoints, speed, image, color) {
-  //     console.log("getting directions", origin, destination);
-  //     var request = {
-  //       origin:origin,
-  //       destination:destination,
-  //       waypoints: waypoints,
-  //       travelMode: google.maps.TravelMode.DRIVING
-  //     };
-  //     directionService.route(request, function(result, status) {
-  //       console.log("result and status", result, status);
-  //       if (status == google.maps.DirectionsStatus.OK) {
-  //           console.log("this is the request", request);
-  //           directionDisplay.setDirections(result);
-  //           console.log("Time to get to airport: " + result.routes[0].legs[0].duration.value);
-            
-  //           function totalDistance(route) {
-  //             var total= 0;
-  //             for (i = 0; i < route.legs.length; i++) {
-  //               total += route.legs[i].distance.value;
-  //             }
-  //             console.log("Total Distance to airport: " + total + "m");
-  //             distanceToAirport = total;
-  //             var criminalEstimate = Math.ceil(((distanceToAirport/1000)/80)*60)
-  //             $(".criminal-estimate").html("You are about " +criminalEstimate + " minutes away.")
-  //             var policeEstimate = Math.ceil(((distanceToAirport/1000)/90)*60)
-  //             $(".police-estimate").html("The police are about " +policeEstimate + " minutes way")
-  //             $(".rob").on("click", function(){
-  //               policeRandom = ((Math.ceil(Math.random()*100))/100);
-  //               while(policeRandom <= .75){
-  //                 policeRandom = ((Math.ceil(Math.random()*100))/100);
-  //               }
-  //               criminalRandom = ((Math.ceil(Math.random()*100))/100);
-  //               while(criminalRandom <= .9){
-  //                 criminalRandom = ((Math.ceil(Math.random()*100))/100);
-  //               }
-  //               var criminalTime = (distanceToAirport/1000)/(80*criminalRandom);
-  //               //minutes = policeTime*60 remainder is seconds in decimal
-  //               var criminalRemainder = (criminalTime*60) - (Math.floor(criminalTime*60))
-  //               var criminalSeconds = (Math.floor(criminalRemainder*60))
-  //               console.log("You are " + (Math.floor(criminalTime*60)) + " minutes away and " + criminalSeconds + " seconds away!");
-  //               $(".criminalTimeTag").html("You are " + (Math.floor(criminalTime*60)) + " minutes away and " + criminalSeconds + " seconds away!");
-                
-  //               var policeTime = (distanceToAirport/1000)/(90*policeRandom);
-  //               //minutes = policeTime*60 remainder is seconds in decimal
-  //               var policeRemainder = (policeTime*60) - (Math.floor(policeTime*60))
-  //               var policeSeconds = (Math.floor(policeRemainder*60))
-  //               console.log("The police are " + (Math.floor(policeTime*60)) + " minutes away and " + policeSeconds + " seconds away!");
-  //               $(".policeTimeTag").html("The police are " + (Math.floor(policeTime*60)) + " minutes away and " + policeSeconds + " seconds away!");
-  //               if(policeTime < criminalTime){
-  //                 //win
-  //                 $(".win-or-lose").html("The police find you on your way to the aiport. YOU LOSE");
-  //               } else if(criminalTime < policeTime){
-  //                 //lose
-  //                 $(".win-or-lose").html("YOU WIN");
-  //               } else if(policeTime = criminalTime){
-  //                 //meet the police
-  //                 $(".win-or-lose").html("You meet the police at the airport!");
-  //               } else {
-  //                 console.error("Something went wrong when determining who wins");
-  //               }
-  //             })
-  //           }
-  //           totalDistance(result.routes[0]);
-  //           autoRefresh(map, result.routes[0].overview_path, speed, image, color);
-  //         } else {
-  //           window.alert('Directions request failed due to ' + status);
-  //       }
-  //     });
-        
-  // }
 }
