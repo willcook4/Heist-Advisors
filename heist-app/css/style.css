@@ -6,7 +6,8 @@ body {
   font-family: Dosis; }
 
 .button {
-  font-family: Dosis; }
+  font-family: Dosis;
+  font-weight: 700; }
 
 button {
   font-family: Dosis; }
@@ -197,9 +198,14 @@ html, body, main {
       height: 50px;
       background-color: #F2F2F2;
       border: 0; }
+      @media screen and (max-width: 901px) {
+        #floating-panel .location-search input {
+          width: 180px;
+          margin-left: 50px; } }
   #floating-panel .location-button {
     float: right; }
   #floating-panel input#submit {
+    width: 75px;
     color: #020202;
     height: 50px;
     border: 0;
@@ -251,7 +257,8 @@ html, body, main {
     text-align: center;
     background-color: grey; }
     .results .police-time-tag p {
-      padding: 0 20px; }
+      padding: 0 20px;
+      color: whitesmoke; }
   .results .win-or-lose {
     height: 65px;
     width: 100%;
@@ -299,7 +306,9 @@ html, body, main {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    text-align: center; }
+    text-align: center;
+    color: whitesmoke;
+    font-weight: 700; }
   .estimates .vs {
     width: 25%;
     height: 70px;
@@ -320,7 +329,9 @@ html, body, main {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    text-align: center; }
+    text-align: center;
+    color: whitesmoke;
+    font-weight: 700; }
   .estimates .rob {
     background-color: black;
     color: white;
@@ -339,7 +350,9 @@ html, body, main {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    text-align: center; }
+    text-align: center;
+    letter-spacing: 1px;
+    font-weight: 700; }
   .estimates .criminal-estimate {
     background-color: grey;
     width: 100%;
@@ -349,7 +362,10 @@ html, body, main {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    text-align: center; }
+    text-align: center;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 2px; }
 
 .win-or-lose {
   background-color: red; }
@@ -371,19 +387,24 @@ html, body, main {
 .hamburger {
   width: 50px;
   height: 50px;
-  background-color: red;
   font-size: 50px;
+  padding: 0 0 6px 0;
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 10px;
+  left: 10px;
   z-index: 999;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  text-align: center; }
-  @media screen and (min-width: 900px) {
+  text-align: center;
+  color: white;
+  cursor: pointer; }
+  @media screen and (min-width: 901px) {
     .hamburger {
       display: none; } }
+  @media screen and (max-width: 340px) {
+    .hamburger {
+      left: 0; } }
 
 .disclaimer {
   width: 100px;
@@ -453,5 +474,8 @@ html, body, main {
       .disclaimer-info .text-bottom {
         width: 93%;
         margin-left: -46.5%; } }
+
+.black {
+  color: black; }
 
 /*# sourceMappingURL=style.css.map */

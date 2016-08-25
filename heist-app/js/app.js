@@ -34,6 +34,7 @@ HeistApp.handleForm = function() {
   var url = HeistApp.API_URL + $(this).attr("action");
 
   return $.ajax({
+    async: true,
     url: url,
     method: method,
     data: data,
