@@ -1,6 +1,6 @@
 var HeistApp = HeistApp || {}
 
-HeistApp.API_URL = "http://localhost:3000/api";
+HeistApp.API_URL = "/api";
 
 HeistApp.setRequestHeader = function(jqXHR) {
   var token = window.localStorage.getItem("token");
