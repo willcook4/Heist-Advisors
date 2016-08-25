@@ -10,6 +10,7 @@ body{
 
 .button{
   font-family: Dosis;
+  font-weight: 700;
 }
 
 button{
@@ -284,6 +285,7 @@ html, body, main {
     background-color: grey;
     p{
       padding: 0 20px;
+      color: whitesmoke;
     }
   }
   .win-or-lose{
@@ -319,7 +321,7 @@ html, body, main {
 .estimates{
   height: 250px;
   width: 305px;
-  background-color: green;
+  background-color: black;
   margin: 0 0 10px 0;
   .win-percent{
     -webkit-animation:WinPercentColorChange 1s infinite;
@@ -332,6 +334,8 @@ html, body, main {
     flex-direction: column;
     justify-content: center;
     text-align: center;
+    color: whitesmoke;
+    font-weight: 700;
   }
   .vs{
     width: 25%;
@@ -355,6 +359,8 @@ html, body, main {
     flex-direction: column;
     justify-content: center;
     text-align: center;
+    color: whitesmoke;
+    font-weight: 700;
   }
   .rob{
     background-color: black;
@@ -376,6 +382,8 @@ html, body, main {
     flex-direction: column;
     justify-content: center;
     text-align: center;
+    letter-spacing: 1px;
+    font-weight: 700;
   }
   .criminal-estimate{
     background-color: grey;
@@ -387,6 +395,9 @@ html, body, main {
     flex-direction: column;
     justify-content: center;
     text-align: center;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 2px;
   }
 }
 
@@ -401,5 +412,5 @@ html, body, main {
   left: 10px;
   top: 10px;
   z-index: 99;
-  overflow-y: scroll;
+  // overflow-y: scroll;
 }
