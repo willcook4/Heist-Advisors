@@ -239,12 +239,12 @@ html, body, main {
 .heist-photo {
   height: 200px;
   width: 305px;
-  background-color: #F2F2F2;
+  background-color: #020202;
   margin: 10px 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center; }
+  text-align: left;
+  color: #F2F2F2;
+  padding: 10px;
+  font-size: 15.5px; }
 
 .results {
   height: 145px;
