@@ -80,6 +80,7 @@ function initMap() {
         console.log("Airport: " + airportLatLng);
         airportDirectionService = new google.maps.DirectionsService();
         airportDirectionDisplay = new google.maps.DirectionsRenderer({
+          preserveViewport: true,
           polylineOptions: {
             strokeWeight: 5,
             zIndex: 10
@@ -207,6 +208,8 @@ function initMap() {
       heistLocation = undefined;
       if (!heistLocation) {
         heistLocation = event.latLng;
+        map.setZoom(15);
+        map.panTo(heistLocation);
         findNearestAirport(heistLocation, function(airport) {
           setupRouteForCriminals(function(){
             findNearestPoliceStation(heistLocation, function(nearestPoliceStationLatLng) {
@@ -270,7 +273,7 @@ function initMap() {
       marker.setPosition(latlng);
       // map.panTo(latlng);
   }
-  function animateRoute(map, pathCoords, interval, image, color) {
+  function animateRoute(map, pathCoords, interval, image, color, isCriminal) {
     var i, route, marker;
     route = new google.maps.Polyline({
       path: [],
@@ -282,16 +285,19 @@ function initMap() {
       map: map
     });
     var pathCoordsLength = pathCoords.length
-    marker=new google.maps.Marker({map:map, icon:image});
+    marker = new google.maps.Marker({map:map, icon:image});
     for (i = 0; i < pathCoordsLength; i++) {       
-      setTimeout(function(coords, index, pathCoordsLength, image) {
+      setTimeout(function(coords, index, pathCoordsLength, image, isCriminal) {
         route.getPath().push(coords);
         moveMarker(map, marker, coords);
+        if (isCriminal) {
+          map.panTo(coords);
+        }
         if (index === pathCoordsLength - 1 && !winner) {
           winner = true;
           updateWinscreenUi();
         }
-      }, interval * i, pathCoords[i], i, pathCoordsLength, image);
+      }, interval * i, pathCoords[i], i, pathCoordsLength, image, isCriminal);
 
     }
   }
@@ -360,8 +366,8 @@ function initMap() {
       policeRouteSetupInfo.interval = ((totalSecondsPolice/conversionToGameTime)/policePathCoords.length)*1000;
       routeStats = { criminalTime: criminalTime, criminalSeconds: criminalSeconds, policeTime: policeTime, policeSeconds: policeSeconds };
 
-      animateRoute(map, criminalPathCoords, criminalsRouteSetupInfo.interval, criminalsRouteSetupInfo.image, criminalsRouteSetupInfo.color);
-      animateRoute(map, policePathCoords, policeRouteSetupInfo.interval, policeRouteSetupInfo.image, policeRouteSetupInfo.color);
+      animateRoute(map, criminalPathCoords, criminalsRouteSetupInfo.interval, criminalsRouteSetupInfo.image, criminalsRouteSetupInfo.color, true);
+      animateRoute(map, policePathCoords, policeRouteSetupInfo.interval, policeRouteSetupInfo.image, policeRouteSetupInfo.color, false);
 
     })
   }
