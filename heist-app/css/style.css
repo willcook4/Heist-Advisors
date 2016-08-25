@@ -6,7 +6,8 @@ body {
   font-family: Dosis; }
 
 .button {
-  font-family: Dosis; }
+  font-family: Dosis;
+  font-weight: 700; }
 
 button {
   font-family: Dosis; }
@@ -247,7 +248,8 @@ html, body, main {
     text-align: center;
     background-color: grey; }
     .results .police-time-tag p {
-      padding: 0 20px; }
+      padding: 0 20px;
+      color: whitesmoke; }
   .results .win-or-lose {
     height: 65px;
     width: 100%;
@@ -283,7 +285,7 @@ html, body, main {
 .estimates {
   height: 250px;
   width: 305px;
-  background-color: green;
+  background-color: black;
   margin: 0 0 10px 0; }
   .estimates .win-percent {
     -webkit-animation: WinPercentColorChange 1s infinite;
@@ -295,7 +297,9 @@ html, body, main {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    text-align: center; }
+    text-align: center;
+    color: whitesmoke;
+    font-weight: 700; }
   .estimates .vs {
     width: 25%;
     height: 70px;
@@ -316,7 +320,9 @@ html, body, main {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    text-align: center; }
+    text-align: center;
+    color: whitesmoke;
+    font-weight: 700; }
   .estimates .rob {
     background-color: black;
     color: white;
@@ -335,7 +341,9 @@ html, body, main {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    text-align: center; }
+    text-align: center;
+    letter-spacing: 1px;
+    font-weight: 700; }
   .estimates .criminal-estimate {
     background-color: grey;
     width: 100%;
@@ -345,7 +353,10 @@ html, body, main {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    text-align: center; }
+    text-align: center;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 2px; }
 
 .win-or-lose {
   background-color: red; }
@@ -356,7 +367,62 @@ html, body, main {
   position: absolute;
   left: 10px;
   top: 10px;
-  z-index: 99;
-  overflow-y: scroll; }
+  z-index: 99; }
+
+.disclaimer {
+  width: 100px;
+  height: 15px;
+  color: #606060;
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  margin-left: -50px;
+  text-align: center;
+  z-index: 5; }
+
+.disclaimer-info {
+  width: 80vw;
+  height: 97vh;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -48.5vh 0 0 -40vw;
+  z-index: 99; }
+  .disclaimer-info .close {
+    color: #020202;
+    width: 400px;
+    height: 20px;
+    position: absolute;
+    bottom: 291px;
+    left: 50%;
+    margin-left: -200px; }
+  .disclaimer-info .text {
+    background-color: tan;
+    width: 75%;
+    height: 70vh;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -35vh 0 0 -37.5%;
+    overflow-y: auto;
+    font-size: 12px;
+    padding: 0 20px;
+    text-align: left; }
+  .disclaimer-info .text-top {
+    width: 78%;
+    height: 50px;
+    position: absolute;
+    left: 50%;
+    top: 287px;
+    margin-left: -39%;
+    background-color: #bc9055; }
+  .disclaimer-info .text-bottom {
+    width: 78%;
+    height: 50px;
+    position: absolute;
+    left: 50%;
+    bottom: 287px;
+    margin-left: -39%;
+    background-color: #bc9055; }
 
 /*# sourceMappingURL=style.css.map */

@@ -34,6 +34,7 @@ HeistApp.handleForm = function() {
   var url = HeistApp.API_URL + $(this).attr("action");
 
   return $.ajax({
+    async: true,
     url: url,
     method: method,
     data: data,
@@ -91,7 +92,6 @@ HeistApp.initEventHandlers = function() {
   $(".navbar a.logout").on('click', this.logout);
   this.$main.on("focus", "form input", function() {
     $(this).parent().find("small").addClass('show-for-sr');
-    console.log($(this).parent().find("small"))
   });
 
 }
