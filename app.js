@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var cors = require('cors');
 
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 8000;
 var routes = require('./config/routes');
 var databaseUri = require('./config/db')(environment);
 
@@ -20,7 +20,7 @@ app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(express.static("public"));
 app.use('/api', routes);
 
 app.listen(port, function(){

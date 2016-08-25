@@ -7,20 +7,24 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "postinstall": "bower install",
+    "start": "node app"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^0.8.7",
+    "bower": "^1.7.9",
     "body-parser": "^1.15.2",
-    "chai": "^3.5.0",
     "cors": "^2.7.1",
     "express": "^4.14.0",
     "jsonwebtoken": "^7.1.9",
     "mongoose": "^4.5.9",
     "mongoose-beautiful-unique-validation": "^5.0.1",
-    "morgan": "^1.7.0",
+    "morgan": "^1.7.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
     "supertest": "^2.0.0"
   }
 }
