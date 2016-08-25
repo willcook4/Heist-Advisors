@@ -14,7 +14,7 @@ button {
 input {
   font-family: Dosis; }
 
-.background {
+video.background {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -82,9 +82,9 @@ input {
       .title h1 {
         font-size: 60px;
         margin: 70px 0 0 0; } }
-    @media screen and (max-width: 355px) {
+    @media screen and (max-width: 370px) {
       .title h1 {
-        font-size: 55px;
+        font-size: 52px;
         margin: 75px 0 0 0; } }
   .title .line1 {
     width: 200px;
@@ -146,6 +146,10 @@ input {
   left: 50%;
   margin-left: -30%;
   box-shadow: 0px 0px 20px #2F2F2F; }
+  @media screen and (max-width: 675px) {
+    .user-form {
+      width: 90%;
+      margin-left: -45%; } }
   .user-form .form-control {
     margin: 0; }
   .user-form button {
@@ -379,12 +383,13 @@ html, body, main {
   z-index: 99; }
   .disclaimer-info .close {
     color: #020202;
-    width: 400px;
-    height: 20px;
+    width: 78%;
+    height: 30px;
     position: absolute;
     bottom: 291px;
     left: 50%;
-    margin-left: -200px; }
+    margin-left: -36.5%;
+    text-align: center; }
   .disclaimer-info .text {
     background-color: tan;
     width: 75%;
@@ -397,6 +402,10 @@ html, body, main {
     font-size: 12px;
     padding: 0 20px;
     text-align: left; }
+    @media screen and (max-width: 900px) {
+      .disclaimer-info .text {
+        width: 90%;
+        margin: -35vh 0 0 -45%; } }
   .disclaimer-info .text-top {
     width: 78%;
     height: 50px;
@@ -405,6 +414,10 @@ html, body, main {
     top: 287px;
     margin-left: -39%;
     background-color: #bc9055; }
+    @media screen and (max-width: 900px) {
+      .disclaimer-info .text-top {
+        width: 93%;
+        margin-left: -46.5%; } }
   .disclaimer-info .text-bottom {
     width: 78%;
     height: 50px;
@@ -413,5 +426,9 @@ html, body, main {
     bottom: 287px;
     margin-left: -39%;
     background-color: #bc9055; }
+    @media screen and (max-width: 900px) {
+      .disclaimer-info .text-bottom {
+        width: 93%;
+        margin-left: -46.5%; } }
 
 /*# sourceMappingURL=style.css.map */

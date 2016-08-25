@@ -1,3 +1,5 @@
+
+
 @font-face {
   font-family: pricedown;
   src: url('../fonts/pricedown.ttf');
@@ -20,7 +22,7 @@ input{
   font-family: Dosis;
 }
 
-.background{
+video.background{
   position: fixed;
   top: 50%;
   left: 50%;
@@ -93,8 +95,8 @@ input{
       font-size: 60px;
       margin: 70px 0 0 0;
     }
-    @media screen and (max-width: 355px) {
-      font-size: 55px;
+    @media screen and (max-width: 370px) {
+      font-size: 52px;
       margin: 75px 0 0 0;
     }
   }
@@ -163,6 +165,10 @@ input{
   left: 50%;
   margin-left: -30%;
   box-shadow: 0px 0px 20px #2F2F2F;
+  @media screen and (max-width: 675px) {
+    width: 90%;
+    margin-left: -45%;
+  }
   .form-control{
     margin: 0;
   }
@@ -425,12 +431,13 @@ html, body, main {
   z-index: 99;
   .close{
     color: #020202;
-    width: 400px;
-    height: 20px;
+    width: 78%;
+    height: 30px;
     position: absolute;
     bottom: 291px;
     left: 50%;
-    margin-left: -200px;
+    margin-left: -36.5%;
+    text-align: center;
   }
   .text{
     background-color: tan;
@@ -444,6 +451,10 @@ html, body, main {
     font-size: 12px;
     padding: 0 20px;
     text-align: left;
+    @media screen and (max-width: 900px) {
+      width: 90%;
+      margin: -35vh 0 0 -45%;
+    }
   }
   .text-top{
     width: 78%;
@@ -454,6 +465,10 @@ html, body, main {
     top: 287px;
     margin-left: -39%;
     background-color: darken(tan, 15%);
+    @media screen and (max-width: 900px) {
+      width: 93%;
+      margin-left: -46.5%;
+    }
   }
   .text-bottom{
     width: 78%;
@@ -464,5 +479,9 @@ html, body, main {
     bottom: 287px;
     margin-left: -39%;
     background-color: darken(tan, 15%);
+    @media screen and (max-width: 900px) {
+      width: 93%;
+      margin-left: -46.5%;
+    }
   }
 }
