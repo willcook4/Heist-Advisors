@@ -1,3 +1,5 @@
+
+
 @font-face {
   font-family: pricedown;
   src: url('../fonts/pricedown.ttf');
@@ -21,7 +23,7 @@ input{
   font-family: Dosis;
 }
 
-.background{
+video.background{
   position: fixed;
   top: 50%;
   left: 50%;
@@ -52,7 +54,7 @@ input{
   z-index: 1;
   width: 100vw;
   top: 0;
-  padding: 10px 0 30px 0;
+  padding: 10px 0 60px 0;
   background-image: linear-gradient(black, rgba(0,0,0,0));
 }
 
@@ -61,10 +63,21 @@ input{
   z-index: 99;
   width: 100vw;
   top: 10px;
+  @media screen and (max-width: 975px) {
+    right: 0;
+    width: 80vw;
+  }
+  @media screen and (max-width: 635px) {
+    width: 100vw;
+  }
   li{
     display: inline;
     margin: 0 10px;
     z-index: 3;
+    @media screen and (max-width: 635px) {
+      display: block;
+      margin: 5px 10px;
+    }
     a{
       color: #F2F2F2;
     }
@@ -94,8 +107,8 @@ input{
       font-size: 60px;
       margin: 70px 0 0 0;
     }
-    @media screen and (max-width: 355px) {
-      font-size: 55px;
+    @media screen and (max-width: 370px) {
+      font-size: 52px;
       margin: 75px 0 0 0;
     }
   }
@@ -164,6 +177,13 @@ input{
   left: 50%;
   margin-left: -30%;
   box-shadow: 0px 0px 20px #2F2F2F;
+  @media screen and (max-width: 675px) {
+    width: 90%;
+    margin-left: -45%;
+  }
+  @media screen and (max-width: 635px) {
+    top: 100px;
+  }
   .form-control{
     margin: 0;
   }
@@ -220,12 +240,17 @@ html, body, main {
       height: 50px;
       background-color: #F2F2F2;
       border: 0;
+      @media screen and (max-width: 901px) {
+        width: 180px;
+        margin-left: 50px;
+      }
     }
   }
   .location-button{
     float: right;
   }
   input#submit{
+    width: 75px;
     color: #020202;
     height: 50px;
     border: 0;
@@ -249,12 +274,12 @@ html, body, main {
 .heist-photo{
   height: 200px;
   width: 305px;
-  background-color: #F2F2F2;
+  background-color: #020202;
   margin: 10px 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
+  text-align: left;
+  color: #F2F2F2;
+  padding: 10px;
+  font-size: 15.5px;
 }
 
 .results{
@@ -412,6 +437,35 @@ html, body, main {
   left: 10px;
   top: 10px;
   z-index: 99;
+  @media screen and (max-width: 900px) {
+    display: none;
+  }
+  @media screen and (max-width: 340px) {
+    left: 0;
+  }
+}
+
+.hamburger{
+  @media screen and (min-width: 901px) {
+    display: none;
+  }
+  width: 50px;
+  height: 50px;
+  font-size: 50px;
+  padding: 0 0 6px 0;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  cursor: pointer;
+  @media screen and (max-width: 340px) {
+    left: 0;
+  }
 }
 
 .disclaimer{
@@ -436,12 +490,13 @@ html, body, main {
   z-index: 99;
   .close{
     color: #020202;
-    width: 400px;
-    height: 20px;
+    width: 78%;
+    height: 30px;
     position: absolute;
     bottom: 291px;
     left: 50%;
-    margin-left: -200px;
+    margin-left: -36.5%;
+    text-align: center;
   }
   .text{
     background-color: tan;
@@ -455,6 +510,10 @@ html, body, main {
     font-size: 12px;
     padding: 0 20px;
     text-align: left;
+    @media screen and (max-width: 900px) {
+      width: 90%;
+      margin: -35vh 0 0 -45%;
+    }
   }
   .text-top{
     width: 78%;
@@ -465,6 +524,10 @@ html, body, main {
     top: 287px;
     margin-left: -39%;
     background-color: darken(tan, 15%);
+    @media screen and (max-width: 900px) {
+      width: 93%;
+      margin-left: -46.5%;
+    }
   }
   .text-bottom{
     width: 78%;
@@ -475,5 +538,12 @@ html, body, main {
     bottom: 287px;
     margin-left: -39%;
     background-color: darken(tan, 15%);
+    @media screen and (max-width: 900px) {
+      width: 93%;
+      margin-left: -46.5%;
+    }
   }
+}
+.black{
+  color: black;
 }
