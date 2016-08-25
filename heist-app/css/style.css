@@ -369,4 +369,60 @@ html, body, main {
   top: 10px;
   z-index: 99; }
 
+.disclaimer {
+  width: 100px;
+  height: 15px;
+  color: #606060;
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  margin-left: -50px;
+  text-align: center;
+  z-index: 5; }
+
+.disclaimer-info {
+  width: 80vw;
+  height: 97vh;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -48.5vh 0 0 -40vw;
+  z-index: 99; }
+  .disclaimer-info .close {
+    color: #020202;
+    width: 400px;
+    height: 20px;
+    position: absolute;
+    bottom: 291px;
+    left: 50%;
+    margin-left: -200px; }
+  .disclaimer-info .text {
+    background-color: tan;
+    width: 75%;
+    height: 70vh;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -35vh 0 0 -37.5%;
+    overflow-y: auto;
+    font-size: 12px;
+    padding: 0 20px;
+    text-align: left; }
+  .disclaimer-info .text-top {
+    width: 78%;
+    height: 50px;
+    position: absolute;
+    left: 50%;
+    top: 287px;
+    margin-left: -39%;
+    background-color: #bc9055; }
+  .disclaimer-info .text-bottom {
+    width: 78%;
+    height: 50px;
+    position: absolute;
+    left: 50%;
+    bottom: 287px;
+    margin-left: -39%;
+    background-color: #bc9055; }
+
 /*# sourceMappingURL=style.css.map */

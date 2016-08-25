@@ -92,7 +92,6 @@ HeistApp.initEventHandlers = function() {
   $(".navbar a.logout").on('click', this.logout);
   this.$main.on("focus", "form input", function() {
     $(this).parent().find("small").addClass('show-for-sr');
-    console.log($(this).parent().find("small"))
   });
 
 }

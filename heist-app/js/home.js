@@ -1,30 +1,19 @@
-// _.once = function(){
-//   var $circle = $(".circle");
-//   var $line1 = $(".line1");
-//   var $line2 = $(".line2");
-//   var $background = $(".background");
-//   var promoNum = 1;
+$(".disclaimer-info").hide();
 
-//   $circle.hide();
-//   $line1.hide();
-//   $line2.hide();
-//   $line1.animate({width:'toggle'},1500);
-//   $line2.animate({width:'toggle'},1500);
-//   $circle.fadeIn(1500);
+$(".disclaimer").on("click", function(){
+  $(".text").hide();
+  $(".disclaimer-info").show();
+  $( ".text" ).slideToggle("slow");
+  $(".text-top").animate({top: "44px"}, 600);
+  $(".text-bottom").animate({bottom: "44px"}, 600);
+  $(".close").animate({bottom: "58px"}, 600);
+});
 
-//   setInterval(function() {
-//     if(promoNum < 4){
-//       promoNum++;
-//     }else{
-//       promoNum = 1;
-//     }
-//     $background.fadeOut("slow")
-//     setTimeout(function(){
-//       $background.css("background-image", "url('../images/promo"+promoNum+".jpg')");
-//       $background.fadeIn("slow");
-//     }, 500);
-//   }, 3000);
-// }
-
-// _.once()
-
+$(".close").on("click", function(){
+  $( ".text" ).slideToggle("slow", function(){
+    $(".disclaimer-info").hide();
+  });
+  $(".text-top").animate({top: "287px"}, 550);
+  $(".text-bottom").animate({bottom: "287px"}, 550);
+  $(".close").animate({bottom: "291px"}, 550);
+});
