@@ -1,25 +1,25 @@
 console.log("js loaded");
 initMap();
-var policeStartLocation;
-var endLocation;
-var mapCenterLatLng;
-var map;
-var marker;
+// var policeStartLocation;
+// var endLocation;
+// var mapCenterLatLng;
+// var map;
+// var marker;
 var airportLatLng;
 var winner;
 var distanceToAirport;
-var criminalRandom;
+// var criminalRandom;
 var policeDistanceToHiest;
-var policeRandom;
+// var policeRandom;
 var jewelryStores = [];
 var banks = [];
 var policeStations = [];
 var airports = [];
 var criminalsRouteSetupInfo;
 var policeRouteSetupInfo;
-var panorama;
+// var panorama;
 var currentMarker;
-var autocomplete;
+// var autocomplete;
 
 function initMap() {
   console.log("initializing");
@@ -39,11 +39,8 @@ function initMap() {
       position: google.maps.ControlPosition.RIGHT_BOTTOM
     },
     styles: [
-      {"featureType":"all",
-      "elementType":"labels.text.fill",
-      "stylers":[{"color":"#ffffff"}]},
-
-      {"featureType":"all",
+      {"featureType":"all", "elementType":"labels.text.fill", "stylers":[{"color":"#ffffff"}]},
+{"featureType":"all",
       "elementType":"labels.text.stroke",
       "stylers":[{"color":"#000000"},{"lightness":13}]}
 
@@ -98,7 +95,7 @@ function initMap() {
   });
 
 
-  autocomplete = new google.maps.places.Autocomplete(( document.getElementById('address')), { types: ['(cities)']});
+  var autocomplete = new google.maps.places.Autocomplete(( document.getElementById('address')), { types: ['(cities)']});
   
   var geocoder = new google.maps.Geocoder();
   document.getElementById('submit').addEventListener('click', function() {
@@ -495,7 +492,6 @@ function initMap() {
       }
       animateRoute(map, criminalsRouteSetupInfo.route.routes[0].overview_path, criminalsRouteSetupInfo.speed, criminalsRouteSetupInfo.image, criminalsRouteSetupInfo.color);
       animateRoute(map, policeRouteSetupInfo.route.routes[0].overview_path, policeRouteSetupInfo.speed, policeRouteSetupInfo.image, policeRouteSetupInfo.color);
-
     })
   }
 
