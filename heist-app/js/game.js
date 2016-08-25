@@ -9,7 +9,8 @@ var criminalsRouteSetupInfo;
 var policeRouteSetupInfo;
 var currentMarker;
 var routeStats;
-var winner; 
+var winner;
+var isAnimating = false;
 
 function initMap() {
   console.log("initializing");
@@ -194,6 +195,7 @@ function initMap() {
   }
   function heistMarkerListener(marker) {
     marker.addListener('click', function(event) {
+      clearWinscreenUi();
       if (currentMarker !== undefined) {
         currentMarker.setAnimation(null);  
       }
@@ -274,6 +276,7 @@ function initMap() {
       // map.panTo(latlng);
   }
   function animateRoute(map, pathCoords, interval, image, color, isCriminal) {
+    winner = undefined;
     var i, route, marker;
     route = new google.maps.Polyline({
       path: [],
@@ -334,41 +337,55 @@ function initMap() {
 
 
     $(".rob").on("click", function(){
-      policeRandom = ((Math.ceil(Math.random()*100))/100);
-      while(policeRandom <= .75){
+      clearWinscreenUi();
+      if (!isAnimating) {
         policeRandom = ((Math.ceil(Math.random()*100))/100);
-      }
-      criminalRandom = ((Math.ceil(Math.random()*100))/100);
-      while(criminalRandom <= .9){
+        while(policeRandom <= .75){
+          policeRandom = ((Math.ceil(Math.random()*100))/100);
+        }
         criminalRandom = ((Math.ceil(Math.random()*100))/100);
+        while(criminalRandom <= .9){
+          criminalRandom = ((Math.ceil(Math.random()*100))/100);
+        }
+        var criminalTime = ((criminalsRouteSetupInfo.routeDistance)/1000)/(80*criminalRandom);
+        //minutes = policeTime*60 remainder is seconds in decimal
+        var criminalRemainder = (criminalTime*60) - (Math.floor(criminalTime*60))
+        var criminalSeconds = (Math.floor(criminalRemainder*60))
+
+        var policeTime = ((policeRouteSetupInfo.routeDistance)/1000)/(90*policeRandom);
+        //minutes = policeTime*60 remainder is seconds in decimal
+        var policeRemainder = (policeTime*60) - (Math.floor(policeTime*60))
+        var policeSeconds = (Math.floor(policeRemainder*60))
+
+        var totalSecondsCriminal = ((Math.floor(criminalTime*60))*60) + criminalSeconds;
+        var totalSecondsPolice = ((Math.floor(policeTime*60))*60) + policeSeconds;
+
+        var criminalPathCoords = criminalsRouteSetupInfo.route.routes[0].overview_path;
+        var policePathCoords = policeRouteSetupInfo.route.routes[0].overview_path;
+
+        var animationTime = 20;
+
+        var conversionToGameTime = totalSecondsPolice/animationTime;
+
+        criminalsRouteSetupInfo.interval = ((totalSecondsCriminal/conversionToGameTime)/criminalPathCoords.length)*1000;
+        policeRouteSetupInfo.interval = ((totalSecondsPolice/conversionToGameTime)/policePathCoords.length)*1000;
+        routeStats = { criminalTime: criminalTime, criminalSeconds: criminalSeconds, policeTime: policeTime, policeSeconds: policeSeconds };
+
+        animateRoute(map, criminalPathCoords, criminalsRouteSetupInfo.interval, criminalsRouteSetupInfo.image, criminalsRouteSetupInfo.color, true);
+        animateRoute(map, policePathCoords, policeRouteSetupInfo.interval, policeRouteSetupInfo.image, policeRouteSetupInfo.color, false);
+
+        isAnimating = true;
       }
-      var criminalTime = ((criminalsRouteSetupInfo.routeDistance)/1000)/(80*criminalRandom);
-      //minutes = policeTime*60 remainder is seconds in decimal
-      var criminalRemainder = (criminalTime*60) - (Math.floor(criminalTime*60))
-      var criminalSeconds = (Math.floor(criminalRemainder*60))
-
-      var policeTime = ((policeRouteSetupInfo.routeDistance)/1000)/(90*policeRandom);
-      //minutes = policeTime*60 remainder is seconds in decimal
-      var policeRemainder = (policeTime*60) - (Math.floor(policeTime*60))
-      var policeSeconds = (Math.floor(policeRemainder*60))
-
-      var totalSecondsCriminal = ((Math.floor(criminalTime*60))*60) + criminalSeconds;
-      var totalSecondsPolice = ((Math.floor(policeTime*60))*60) + policeSeconds;
-
-      var criminalPathCoords = criminalsRouteSetupInfo.route.routes[0].overview_path;
-      var policePathCoords = policeRouteSetupInfo.route.routes[0].overview_path;
-
-      var animationTime = 20;
-
-      var conversionToGameTime = totalSecondsPolice/animationTime;
-
-      criminalsRouteSetupInfo.interval = ((totalSecondsCriminal/conversionToGameTime)/criminalPathCoords.length)*1000;
-      policeRouteSetupInfo.interval = ((totalSecondsPolice/conversionToGameTime)/policePathCoords.length)*1000;
-      routeStats = { criminalTime: criminalTime, criminalSeconds: criminalSeconds, policeTime: policeTime, policeSeconds: policeSeconds };
-
-      animateRoute(map, criminalPathCoords, criminalsRouteSetupInfo.interval, criminalsRouteSetupInfo.image, criminalsRouteSetupInfo.color, true);
-      animateRoute(map, policePathCoords, policeRouteSetupInfo.interval, policeRouteSetupInfo.image, policeRouteSetupInfo.color, false);
     })
+  }
+
+  function clearWinscreenUi() {
+    $(".criminal-time-tag").html("");
+    
+    $(".police-time-tag").html("");
+
+    $(".win-or-lose").html("");
+    
   }
 
   function updateWinscreenUi() {
@@ -376,6 +393,7 @@ function initMap() {
     var criminalSeconds = routeStats.criminalSeconds;
     var policeTime = routeStats.policeTime;
     var policeSeconds = routeStats.policeSeconds;
+    isAnimating = false;
 
     $(".criminal-time-tag").html("<p>You make it to the airport in " + (Math.floor(criminalTime*60)) + " minutes and " + criminalSeconds + " seconds!</p>");
     
