@@ -45,7 +45,7 @@ video.background {
   z-index: 1;
   width: 100vw;
   top: 0;
-  padding: 10px 0 30px 0;
+  padding: 10px 0 60px 0;
   background-image: linear-gradient(black, transparent); }
 
 .navbar {
@@ -53,10 +53,21 @@ video.background {
   z-index: 99;
   width: 100vw;
   top: 10px; }
+  @media screen and (max-width: 975px) {
+    .navbar {
+      right: 0;
+      width: 80vw; } }
+  @media screen and (max-width: 635px) {
+    .navbar {
+      width: 100vw; } }
   .navbar li {
     display: inline;
     margin: 0 10px;
     z-index: 3; }
+    @media screen and (max-width: 635px) {
+      .navbar li {
+        display: block;
+        margin: 5px 10px; } }
     .navbar li a {
       color: #F2F2F2; }
 
@@ -151,6 +162,9 @@ video.background {
     .user-form {
       width: 90%;
       margin-left: -45%; } }
+  @media screen and (max-width: 635px) {
+    .user-form {
+      top: 100px; } }
   .user-form .form-control {
     margin: 0; }
   .user-form button {

@@ -423,6 +423,3 @@ $(".hamburger").on("click", function(){
   $(".side-panel").slideToggle('fast');
   $(this).toggleClass("black");
 });
-while ( $(window).width() > 900) {  
-  $(".side-panel").show();
-}
