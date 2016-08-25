@@ -18,6 +18,7 @@ var airports = [];
 var criminalsRouteSetupInfo;
 var policeRouteSetupInfo;
 var panorama;
+var currentMarker;
 
 function initMap() {
   console.log("initializing");
@@ -51,9 +52,8 @@ function initMap() {
     });    
   })
 
-  function setupRouteForPolice(startPlace, callback) {
-    console.log("Police station start point: " + startPlace.geometry.location);
-    var policeStation = startPlace.geometry.location
+  function setupRouteForPolice(nearestPoliceStationLatLng, callback) {
+    console.log("Police station start point: " + nearestPoliceStationLatLng);
     policeDirectionsService = new google.maps.DirectionsService();
     policeDirectionsDisplay = new google.maps.DirectionsRenderer({
       polylineOptions: {
@@ -72,9 +72,7 @@ function initMap() {
     var speed = 90;
     var image = "../images/policecar.png";
     var color = "#FF0000";
-    // getDirectionsAndDisplay(policeDirectionsService, policeDirectionsDisplay, policeStation, airportLatLng, waypoints, speed, image, color);
-    // console.log("route info for police: ", { directionService: policeDirectionsService, directionDisplay: policeDirectionsDisplay, origin: policeStation, destination: airportLatLng, waypoints: waypoints, speed: speed, image: image, color: color});
-    policeRouteSetupInfo = { directionService: policeDirectionsService, directionDisplay: policeDirectionsDisplay, origin: policeStation, destination: airportLatLng, waypoints: waypoints, speed: speed, image: image, color: color};
+    policeRouteSetupInfo = { directionService: policeDirectionsService, directionDisplay: policeDirectionsDisplay, origin: nearestPoliceStationLatLng, destination: airportLatLng, waypoints: waypoints, speed: speed, image: image, color: color};
     return callback();
   }
   
@@ -186,23 +184,69 @@ function initMap() {
       } 
     }
   }
+
   function findNearestPoliceStation(heistLocation, callback) {
-    var request = {
-      location: heistLocation,
-      rankBy: google.maps.places.RankBy.DISTANCE,
-      types: ['police']
-    };
-    policeService = new google.maps.places.PlacesService(map);
-    policeService.nearbySearch(request, function(results, status) {
-      if (status === google.maps.places.PlacesServiceStatus.OK) {
-        console.log("police search results" + results[0]);
-        console.log(results[0]);
-        return callback(results[0]);
-      } else {
-        console.log("Bad search");
-      }
+    // var request = {
+    //   location: heistLocation,
+    //   rankBy: google.maps.places.RankBy.DISTANCE,
+    //   types: ['police']
+    // };
+    // policeService = new google.maps.places.PlacesService(map);
+    // policeService.nearbySearch(request, function(results, status) {
+    //   if (status === google.maps.places.PlacesServiceStatus.OK) {
+    //     console.log("police search results" + results[0]);
+    //     console.log(results[0]);
+    //     return callback(results[0]);
+    //   } else {
+    //     console.log("Bad search");
+    //   }
+    // });
+
+    var distances = [];
+    
+    for (i=0; i<policeStations.length; i++) {
+      policeStationLatLng = new google.maps.LatLng({lat: policeStations[i].position.lat(), lng: policeStations[i].position.lng()});
+      console.log("Heist Location: ", heistLocation);
+      console.log("policeStationLatLng: ",policeStationLatLng);
+
+      distanceAndPolice = ({ 
+        distance: google.maps.geometry.spherical.computeDistanceBetween(policeStationLatLng , heistLocation), 
+        theMadPoPo: policeStations[i] 
+      });
+      console.log("distanceAndPolice", distanceAndPolice);
+      distances.push(distanceAndPolice);
+    }
+    console.log("Police Stations: ", policeStations);
+    distances = distances.sort(function(a, b) {
+      return a.distance - b.distance;
     });
+    console.log("Look at meeeeeeeeee !!!!!", distances[0].theMadPoPo.position.lat());
+    // var tempStation = distances[0];
+    // console.log("Temp Station", tempStation.theMadPoPo);
+    console.log("Distances police station: ", distances[0]);
+    nearestPoliceStationLatLng = new google.maps.LatLng({lat: distances[0].theMadPoPo.position.lat(), lng: distances[0].theMadPoPo.position.lng()});
+    console.log("nearest police stations lat lng: ", nearestPoliceStationLatLng);
+    callback(nearestPoliceStationLatLng);    
   }
+
+  // function findNearestPoliceStation(heistLocation, callback) {
+  //   var request = {
+  //     location: heistLocation,
+  //     rankBy: google.maps.places.RankBy.DISTANCE,
+  //     types: ['police']
+  //   };
+  //   policeService = new google.maps.places.PlacesService(map);
+  //   policeService.nearbySearch(request, function(results, status) {
+  //     if (status === google.maps.places.PlacesServiceStatus.OK) {
+  //       console.log("police search results" + results[0]);
+  //       console.log(results[0]);
+  //       return callback(results[0]);
+  //     } else {
+  //       console.log("Bad search");
+  //     }
+  //   });
+  // }
+
   function findNearestAirport(heistLocation, callback) {
     console.log("HeistLocation" + heistLocation);
     var request = {
@@ -221,13 +265,26 @@ function initMap() {
   }
   function heistMarkerListener(marker) {
     marker.addListener('click', function(event) {
+      if (currentMarker !== undefined) {
+        currentMarker.setAnimation(null);  
+      }
+      
+      currentMarker = this;
+      if(policeRouteSetupInfo !== undefined && criminalsRouteSetupInfo !== undefined) {
+        policeRouteSetupInfo.directionDisplay.setMap(null);
+        policeRouteSetupInfo = undefined;  
+        criminalsRouteSetupInfo.directionDisplay.setMap(null);
+        criminalsRouteSetupInfo = undefined;  
+        console.log("should be undefined" ,criminalsRouteSetupInfo, policeRouteSetupInfo);
+      }
+      heistLocation = undefined;
       if (!heistLocation) {
         heistLocation = event.latLng;
         console.log('Start selected', event.latLng.lat(), event.latLng.lng());
         findNearestAirport(heistLocation, function(airport) {
           setupRouteForCriminals(function(){
-            findNearestPoliceStation(heistLocation, function(pigShop) {
-              setupRouteForPolice(pigShop, function() {
+            findNearestPoliceStation(heistLocation, function(nearestPoliceStationLatLng) {
+              setupRouteForPolice(nearestPoliceStationLatLng, function() {
                 console.log("route info for police: ", policeRouteSetupInfo);
                 console.log("route info for criminals: ", criminalsRouteSetupInfo);
 
