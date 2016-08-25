@@ -1,25 +1,15 @@
 console.log("js loaded");
 initMap();
-// var policeStartLocation;
-// var endLocation;
-// var mapCenterLatLng;
-// var map;
-// var marker;
 var airportLatLng;
-var winner;
-var distanceToAirport;
-// var criminalRandom;
-var policeDistanceToHiest;
-// var policeRandom;
 var jewelryStores = [];
 var banks = [];
 var policeStations = [];
 var airports = [];
 var criminalsRouteSetupInfo;
 var policeRouteSetupInfo;
-// var panorama;
 var currentMarker;
-// var autocomplete;
+var routeStats;
+var winner; 
 
 function initMap() {
   console.log("initializing");
@@ -39,61 +29,8 @@ function initMap() {
       position: google.maps.ControlPosition.RIGHT_BOTTOM
     },
     styles: [
-      {"featureType":"all", "elementType":"labels.text.fill", "stylers":[{"color":"#ffffff"}]},
-{"featureType":"all",
-      "elementType":"labels.text.stroke",
-      "stylers":[{"color":"#000000"},{"lightness":13}]}
-
-      ,{"featureType":"administrative",
-      "elementType":"geometry.fill",
-      "stylers":[{"color":"#000000"}]},
-
-      {"featureType":"administrative",
-      "elementType":"geometry.stroke",
-      "stylers":[{"color":"#144b53"},
-      {"lightness":14},
-      {"weight":1.4}]},
-
-      {"featureType":"landscape",
-      "elementType":"all",
-      "stylers":[{"color":"#08304b"}]},
-
-      {"featureType":"poi",
-      "elementType":"geometry",
-      "stylers":[{"color":"#0c4152"},
-      {"lightness":5}]},
-
-      {"featureType":"road.highway",
-      "elementType":"geometry.fill",
-      "stylers":[{"color":"#000000"}]},
-
-      {"featureType":"road.highway",
-      "elementType":"geometry.stroke",
-      "stylers":[{"color":"#0b434f"},
-      {"lightness":25}]},
-
-      {"featureType":"road.arterial",
-      "elementType":"geometry.fill",
-      "stylers":[{"color":"#000000"}]},
-
-      {"featureType":"road.arterial",
-      "elementType":"geometry.stroke",
-      "stylers":[{"color":"#0b3d51"},
-      {"lightness":16}]},
-
-      {"featureType":"road.local",
-      "elementType":"geometry",
-      "stylers":[{"color":"#000000"}]},
-
-      {"featureType":"transit",
-      "elementType":"all",
-      "stylers":[{"color":"#146474"}]},
-
-      {"featureType":"water",
-      "elementType":"all",
-      "stylers":[{"color":"#021019"}]}]
-  });
-
+      {"featureType":"all", "elementType":"labels.text.fill", "stylers":[{"color":"#ffffff"}]}, {"featureType":"all", "elementType":"labels.text.stroke", "stylers":[{"color":"#000000"}, {"lightness":13}]}, {"featureType":"administrative", "elementType":"geometry.fill", "stylers":[{"color":"#000000"}]}, {"featureType":"administrative", "elementType":"geometry.stroke", "stylers":[{"color":"#144b53"}, {"lightness":14}, {"weight":1.4}]}, {"featureType":"landscape", "elementType":"all", "stylers":[{"color":"#08304b"}]}, {"featureType":"poi", "elementType":"geometry", "stylers":[{"color":"#0c4152"}, {"lightness":5}]}, {"featureType":"road.highway", "elementType":"geometry.fill", "stylers":[{"color":"#000000"}]}, {"featureType":"road.highway", "elementType":"geometry.stroke", "stylers":[{"color":"#0b434f"}, {"lightness":25}]}, {"featureType":"road.arterial","elementType":"geometry.fill", "stylers":[{"color":"#000000"}]}, {"featureType":"road.arterial", "elementType":"geometry.stroke", "stylers":[{"color":"#0b3d51"}, {"lightness":16}]}, {"featureType":"road.local", "elementType":"geometry", "stylers":[{"color":"#000000"}]}, {"featureType":"transit", "elementType":"all", "stylers":[{"color":"#146474"}]}, {"featureType":"water", "elementType":"all","stylers":[{"color":"#021019"}]}
+      ]});
 
   var autocomplete = new google.maps.places.Autocomplete(( document.getElementById('address')), { types: ['(cities)']});
   
@@ -102,10 +39,8 @@ function initMap() {
     geocodeAddress(geocoder, map);
     // Once map is loaded...
     google.maps.event.addListenerOnce(map, 'idle', function(){
-    // console.log("Map is loaded fully");
     getMapMarkers();
     heistLocation = false;
-    endLocation = false;
     });    
   })
 
@@ -125,11 +60,9 @@ function initMap() {
       preserveViewport: true
     });
     var waypoints = [{ location: heistLocation, stopover: false }];
-    console.log("waypoints", waypoints);
-    var speed = 90;
     var image = "../images/policecar.png";
     var color = "#FF0000";
-    policeRouteSetupInfo = { directionService: policeDirectionsService, directionDisplay: policeDirectionsDisplay, origin: nearestPoliceStationLatLng, destination: airportLatLng, waypoints: waypoints, speed: speed, image: image, color: color};
+    policeRouteSetupInfo = { directionService: policeDirectionsService, directionDisplay: policeDirectionsDisplay, origin: nearestPoliceStationLatLng, destination: airportLatLng, waypoints: waypoints, image: image, color: color};
     return callback();
   }
   
@@ -147,6 +80,7 @@ function initMap() {
         console.log("Airport: " + airportLatLng);
         airportDirectionService = new google.maps.DirectionsService();
         airportDirectionDisplay = new google.maps.DirectionsRenderer({
+          preserveViewport: true,
           polylineOptions: {
             strokeWeight: 5,
             zIndex: 10
@@ -154,16 +88,14 @@ function initMap() {
         });
         airportDirectionDisplay.setMap(map);
         var waypoints = [];
-        var speed = 100;
         var image = "../images/criminal_car.png";
         var color = '#0000FF';
-        criminalsRouteSetupInfo = { directionService: airportDirectionService, directionDisplay: airportDirectionDisplay, origin: heistLocation, destination: airportLatLng, waypoints: waypoints, speed: speed, image: image, color: color };
+        criminalsRouteSetupInfo = { directionService: airportDirectionService, directionDisplay: airportDirectionDisplay, origin: heistLocation, destination: airportLatLng, waypoints: waypoints, image: image, color: color };
         callback();
       }
     });    
   }
   function clearMarkers(markers) {
-    console.log(markers);
     markers.forEach(function(marker) {
       marker.setMap(null);
     });
@@ -174,26 +106,16 @@ function initMap() {
     banks = clearMarkers(banks);
     policeStations = clearMarkers(policeStations);
     airports = clearMarkers(airports);
-    // banks
     var request = {
       location: { lat: map.getCenter().lat(), lng: map.getCenter().lng() },
       radius: '8000',
       type: 'bank'
     };
-    // jewelry_store
     var request2 = {
       location: { lat: map.getCenter().lat(), lng: map.getCenter().lng() },
       radius: '8000',
       type: 'jewelry_store'
     };
-    // Airports
-    // var request3 = {
-    //   location: { lat: map.getCenter().lat(), lng: map.getCenter().lng() },
-    //   // radius: '15000',
-    //   rankBy : google.maps.places.RankBy.DISTANCE,
-    //   type: 'airport'
-    // };
-    // Police
     var request4 = {
       location: { lat: map.getCenter().lat(), lng: map.getCenter().lng() },
       radius: '8000',
@@ -202,7 +124,6 @@ function initMap() {
     service = new google.maps.places.PlacesService(map);
     service.textSearch(request, mapMarkers);
     service.textSearch(request2, mapMarkers);
-    // service.textSearch(request3, mapMarkers);
     service.textSearch(request4, mapMarkers);
   }
   function geocodeAddress(geocoder, resultsMap) {
@@ -210,14 +131,9 @@ function initMap() {
     geocoder.geocode({'address': address}, function(results, status) {
       if (status === 'OK') {
         resultsMap.setCenter(results[0].geometry.location);
-        // var marker = new google.maps.Marker({
-        //   map: resultsMap,
-        //   position: results[0].geometry.location
-        // }); Creating marker for geocode search result.
       } else {
         alert('Geocode was not successful for the following reason: ' + status);
       }
-      // mapCenterLatLng = results[0].geometry.location;
     });
   }
   function mapMarkers(results, status) {
@@ -243,69 +159,25 @@ function initMap() {
   }
 
   function findNearestPoliceStation(heistLocation, callback) {
-    // var request = {
-    //   location: heistLocation,
-    //   rankBy: google.maps.places.RankBy.DISTANCE,
-    //   types: ['police']
-    // };
-    // policeService = new google.maps.places.PlacesService(map);
-    // policeService.nearbySearch(request, function(results, status) {
-    //   if (status === google.maps.places.PlacesServiceStatus.OK) {
-    //     console.log("police search results" + results[0]);
-    //     console.log(results[0]);
-    //     return callback(results[0]);
-    //   } else {
-    //     console.log("Bad search");
-    //   }
-    // });
-
     var distances = [];
     
     for (i=0; i<policeStations.length; i++) {
       policeStationLatLng = new google.maps.LatLng({lat: policeStations[i].position.lat(), lng: policeStations[i].position.lng()});
-      console.log("Heist Location: ", heistLocation);
-      console.log("policeStationLatLng: ",policeStationLatLng);
 
       distanceAndPolice = ({ 
         distance: google.maps.geometry.spherical.computeDistanceBetween(policeStationLatLng , heistLocation), 
-        theMadPoPo: policeStations[i] 
+        nearestPoliceStation: policeStations[i] 
       });
-      console.log("distanceAndPolice", distanceAndPolice);
       distances.push(distanceAndPolice);
     }
-    console.log("Police Stations: ", policeStations);
     distances = distances.sort(function(a, b) {
       return a.distance - b.distance;
     });
-    console.log("Look at meeeeeeeeee !!!!!", distances[0].theMadPoPo.position.lat());
-    // var tempStation = distances[0];
-    // console.log("Temp Station", tempStation.theMadPoPo);
-    console.log("Distances police station: ", distances[0]);
-    nearestPoliceStationLatLng = new google.maps.LatLng({lat: distances[0].theMadPoPo.position.lat(), lng: distances[0].theMadPoPo.position.lng()});
-    console.log("nearest police stations lat lng: ", nearestPoliceStationLatLng);
+    nearestPoliceStationLatLng = new google.maps.LatLng({lat: distances[0].nearestPoliceStation.position.lat(), lng: distances[0].nearestPoliceStation.position.lng()});
     callback(nearestPoliceStationLatLng);    
   }
 
-  // function findNearestPoliceStation(heistLocation, callback) {
-  //   var request = {
-  //     location: heistLocation,
-  //     rankBy: google.maps.places.RankBy.DISTANCE,
-  //     types: ['police']
-  //   };
-  //   policeService = new google.maps.places.PlacesService(map);
-  //   policeService.nearbySearch(request, function(results, status) {
-  //     if (status === google.maps.places.PlacesServiceStatus.OK) {
-  //       console.log("police search results" + results[0]);
-  //       console.log(results[0]);
-  //       return callback(results[0]);
-  //     } else {
-  //       console.log("Bad search");
-  //     }
-  //   });
-  // }
-
   function findNearestAirport(heistLocation, callback) {
-    console.log("HeistLocation" + heistLocation);
     var request = {
       location: heistLocation,
       rankBy: google.maps.places.RankBy.DISTANCE,
@@ -316,7 +188,7 @@ function initMap() {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         return callback(results[0]);
       } else {
-        console.log("Bad search for police station...");
+        console.log("Bad search for airport... (probably doesn't have one nearby)");
       }
     });
   }
@@ -331,24 +203,19 @@ function initMap() {
         policeRouteSetupInfo.directionDisplay.setMap(null);
         policeRouteSetupInfo = undefined;  
         criminalsRouteSetupInfo.directionDisplay.setMap(null);
-        criminalsRouteSetupInfo = undefined;  
-        console.log("should be undefined" ,criminalsRouteSetupInfo, policeRouteSetupInfo);
+        criminalsRouteSetupInfo = undefined;
       }
       heistLocation = undefined;
       if (!heistLocation) {
         heistLocation = event.latLng;
-        console.log('Start selected', event.latLng.lat(), event.latLng.lng());
+        map.setZoom(15);
+        map.panTo(heistLocation);
         findNearestAirport(heistLocation, function(airport) {
           setupRouteForCriminals(function(){
             findNearestPoliceStation(heistLocation, function(nearestPoliceStationLatLng) {
               setupRouteForPolice(nearestPoliceStationLatLng, function() {
-                console.log("route info for police: ", policeRouteSetupInfo);
-                console.log("route info for criminals: ", criminalsRouteSetupInfo);
-
                 getDirectionsAndDisplay(criminalsRouteSetupInfo, function() {
-                  getDirectionsAndDisplay(policeRouteSetupInfo, function() {
-                    console.log(criminalsRouteSetupInfo.routeDistance);
-                    console.log(policeRouteSetupInfo.routeDistance);      
+                  getDirectionsAndDisplay(policeRouteSetupInfo, function() {    
                     gameLogic();
                   });
                 });
@@ -357,6 +224,7 @@ function initMap() {
           });
         });
       }
+
 
       var panorama = new google.maps.StreetViewPanorama(
         document.getElementById('pano'), {
@@ -405,7 +273,7 @@ function initMap() {
       marker.setPosition(latlng);
       // map.panTo(latlng);
   }
-  function animateRoute(map, pathCoords, speed, image, color) {
+  function animateRoute(map, pathCoords, interval, image, color, isCriminal) {
     var i, route, marker;
     route = new google.maps.Polyline({
       path: [],
@@ -416,13 +284,21 @@ function initMap() {
       editable: false,
       map: map
     });
-    
-    marker=new google.maps.Marker({map:map, icon:image});
-    for (i = 0; i < pathCoords.length; i++) {       
-      setTimeout(function(coords) {
+    var pathCoordsLength = pathCoords.length
+    marker = new google.maps.Marker({map:map, icon:image});
+    for (i = 0; i < pathCoordsLength; i++) {       
+      setTimeout(function(coords, index, pathCoordsLength, image, isCriminal) {
         route.getPath().push(coords);
         moveMarker(map, marker, coords);
-      }, speed * i, pathCoords[i]);
+        if (isCriminal) {
+          map.panTo(coords);
+        }
+        if (index === pathCoordsLength - 1 && !winner) {
+          winner = true;
+          updateWinscreenUi();
+        }
+      }, interval * i, pathCoords[i], i, pathCoordsLength, image, isCriminal);
+
     }
   }
 
@@ -470,29 +346,54 @@ function initMap() {
       //minutes = policeTime*60 remainder is seconds in decimal
       var criminalRemainder = (criminalTime*60) - (Math.floor(criminalTime*60))
       var criminalSeconds = (Math.floor(criminalRemainder*60))
-      console.log("You are " + (Math.floor(criminalTime*60)) + " minutes away and " + criminalSeconds + " seconds away!");
-      $(".criminal-time-tag").html("<p>You make it to the airport in " + (Math.floor(criminalTime*60)) + " minutes and " + criminalSeconds + " seconds!</p>");
-      
+
       var policeTime = ((policeRouteSetupInfo.routeDistance)/1000)/(90*policeRandom);
       //minutes = policeTime*60 remainder is seconds in decimal
       var policeRemainder = (policeTime*60) - (Math.floor(policeTime*60))
       var policeSeconds = (Math.floor(policeRemainder*60))
-      $(".police-time-tag").html("<p>The police make it to the airport in " + (Math.floor(policeTime*60)) + " minutes and " + policeSeconds + " seconds!</p>");
-      if(policeTime < criminalTime){
-        //win
-        $(".win-or-lose").html("<p>YOU HAVE BEEN CAUGHT</p>");
-      } else if(criminalTime < policeTime){
-        //lose
-        $(".win-or-lose").html("<p>YOU GET AWAY WITH ALL THE CASH!</p>");
-      } else if(policeTime = criminalTime){
-        //meet the police
-        $(".win-or-lose").html("<p>YOU MEET THE POLICE AT THE AIRPORT!</p>");
-      } else {
-        console.error("Something went wrong when determining who wins");
-      }
-      animateRoute(map, criminalsRouteSetupInfo.route.routes[0].overview_path, criminalsRouteSetupInfo.speed, criminalsRouteSetupInfo.image, criminalsRouteSetupInfo.color);
-      animateRoute(map, policeRouteSetupInfo.route.routes[0].overview_path, policeRouteSetupInfo.speed, policeRouteSetupInfo.image, policeRouteSetupInfo.color);
+
+      var totalSecondsCriminal = ((Math.floor(criminalTime*60))*60) + criminalSeconds;
+      var totalSecondsPolice = ((Math.floor(policeTime*60))*60) + policeSeconds;
+
+      var criminalPathCoords = criminalsRouteSetupInfo.route.routes[0].overview_path;
+      var policePathCoords = policeRouteSetupInfo.route.routes[0].overview_path;
+
+      var animationTime = 20;
+
+      var conversionToGameTime = totalSecondsPolice/animationTime;
+
+      criminalsRouteSetupInfo.interval = ((totalSecondsCriminal/conversionToGameTime)/criminalPathCoords.length)*1000;
+      policeRouteSetupInfo.interval = ((totalSecondsPolice/conversionToGameTime)/policePathCoords.length)*1000;
+      routeStats = { criminalTime: criminalTime, criminalSeconds: criminalSeconds, policeTime: policeTime, policeSeconds: policeSeconds };
+
+      animateRoute(map, criminalPathCoords, criminalsRouteSetupInfo.interval, criminalsRouteSetupInfo.image, criminalsRouteSetupInfo.color, true);
+      animateRoute(map, policePathCoords, policeRouteSetupInfo.interval, policeRouteSetupInfo.image, policeRouteSetupInfo.color, false);
     })
+  }
+
+  function updateWinscreenUi() {
+    var criminalTime = routeStats.criminalTime;
+    var criminalSeconds = routeStats.criminalSeconds;
+    var policeTime = routeStats.policeTime;
+    var policeSeconds = routeStats.policeSeconds;
+
+    $(".criminal-time-tag").html("<p>You make it to the airport in " + (Math.floor(criminalTime*60)) + " minutes and " + criminalSeconds + " seconds!</p>");
+    
+
+    $(".police-time-tag").html("<p>The police make it to the airport in " + (Math.floor(policeTime*60)) + " minutes and " + policeSeconds + " seconds!</p>");
+
+    if(policeTime < criminalTime){
+      //win
+      $(".win-or-lose").html("<p>YOU HAVE BEEN CAUGHT</p>");
+    } else if(criminalTime < policeTime){
+      //lose
+      $(".win-or-lose").html("<p>YOU GET AWAY WITH ALL THE CASH!</p>");
+    } else if(policeTime = criminalTime){
+      //meet the police
+      $(".win-or-lose").html("<p>YOU MEET THE POLICE AT THE AIRPORT!</p>");
+    } else {
+      console.error("Something went wrong when determining who wins");
+    }
   }
 
   function totalDistance(route, routeSetupInfo) {
@@ -500,13 +401,10 @@ function initMap() {
     for (i = 0; i < route.legs.length; i++) {
       total += route.legs[i].distance.value;
     }
-    console.log("Total Distance to airport: " + total + "m");
     routeSetupInfo.routeDistance = total;
   }
 
   function getDirectionsAndDisplay(routeSetupInfo, callback) {
-    console.log("route setup info: ", routeSetupInfo);
-    console.log("getting directions", routeSetupInfo.origin, routeSetupInfo.destination);
     var request = {
       origin: routeSetupInfo.origin,
       destination: routeSetupInfo.destination,
@@ -514,16 +412,10 @@ function initMap() {
       travelMode: google.maps.TravelMode.DRIVING
     };
     routeSetupInfo.directionService.route(request, function(result, status) {
-      console.log("result and status", result, status);
       if (status == google.maps.DirectionsStatus.OK) {
-          console.log("this is the request", request);
           routeSetupInfo.directionDisplay.setDirections(result);
-          console.log("Time to get to airport: " + result.routes[0].legs[0].duration.value);
-
           totalDistance(result.routes[0], routeSetupInfo);
           routeSetupInfo.route = result;
-          // animateRoute(map, result.routes[0].overview_path, routeSetupInfo.speed, routeSetupInfo.image, routeSetupInfo.color);
-          console.log("route property of directionsService", routeSetupInfo.directionService);
           return callback();
         } else {
           window.alert('Directions request failed due to '+ routeSetupInfo.image + status);
@@ -532,3 +424,7 @@ function initMap() {
   }
 }
 
+$(".hamburger").on("click", function(){
+  $(".side-panel").slideToggle('fast');
+  $(this).toggleClass("black");
+});

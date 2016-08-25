@@ -30,6 +30,7 @@ HeistApp.handleForm = function() {
   $(this).find('button').prop('disabled', true);
 
   var data = $(this).serialize();
+  window.localStorage.setItem("currentUserEmail", $(this)[0][0].value);
   var method = $(this).attr("method");
   var url = HeistApp.API_URL + $(this).attr("action");
 
@@ -73,12 +74,14 @@ HeistApp.logout = function() {
 
 HeistApp.updateUI = function() {
   var loggedIn = !!window.localStorage.getItem("token");
-
+  window.localStorage.getItem("currentUserEmail");
   if(loggedIn) {
+    $('.user-email').html(window.localStorage.getItem("currentUserEmail"));
     $('.logged-in').removeClass("hidden");
     $('.logged-out').addClass("hidden");
     HeistApp.getTemplate("game");
   } else {
+    $('.user-email').html("");
     $('.logged-in').addClass("hidden");
     $('.logged-out').removeClass("hidden");
     HeistApp.getTemplate("home");
