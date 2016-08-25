@@ -492,4 +492,57 @@ html, body, main {
 .black {
   color: black; }
 
+.github-left {
+  color: white;
+  position: absolute;
+  left: 10%;
+  bottom: 0;
+  z-index: 10; }
+  @media screen and (max-width: 605px) {
+    .github-left {
+      left: 0; } }
+  .github-left li {
+    display: inline-block;
+    padding: 5px 10px; }
+    @media screen and (max-width: 605px) {
+      .github-left li {
+        padding: 5px 3px; } }
+    @media screen and (max-width: 410px) {
+      .github-left li {
+        display: block; } }
+    .github-left li a {
+      color: #F2F2F2; }
+      .github-left li a:hover {
+        color: grey; }
+
+.github-right {
+  color: white;
+  position: absolute;
+  right: 10%;
+  bottom: 0;
+  z-index: 10; }
+  @media screen and (max-width: 605px) {
+    .github-right {
+      right: 0; } }
+  .github-right li {
+    display: inline-block;
+    padding: 5px 10px; }
+    @media screen and (max-width: 605px) {
+      .github-right li {
+        padding: 5px 3px; } }
+    @media screen and (max-width: 410px) {
+      .github-right li {
+        display: block; } }
+    .github-right li a {
+      color: #F2F2F2; }
+      .github-right li a:hover {
+        color: grey; }
+
+.github {
+  color: #F2F2F2;
+  padding: 5px;
+  font-size: 12px; }
+  .github:hover {
+    color: grey; }
+
 /*# sourceMappingURL=style.css.map */
