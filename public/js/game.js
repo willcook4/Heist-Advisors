@@ -347,7 +347,7 @@ function initMap() {
   function gameLogic() {
     var criminalEstimate = Math.ceil((((criminalsRouteSetupInfo.routeDistance)/1000)/80)*60);
     $(".criminal-estimate").html("You are about " +criminalEstimate + " minutes away");
-    var policeEstimate = Math.ceil((((policeRouteSetupInfo.routeDistance)/1000)/90)*60);
+    var policeEstimate = Math.ceil((((policeRouteSetupInfo.routeDistance)/1000)/96)*60);
     $(".police-estimate").html("The police are about " +policeEstimate + " minutes away");
 
     var winPercent = Math.floor((policeEstimate/criminalEstimate)*100)-30
@@ -379,7 +379,7 @@ function initMap() {
       clearWinscreenUi();
       if (!isAnimating) {
         policeRandom = ((Math.ceil(Math.random()*100))/100);
-        while(policeRandom <= .75){
+        while(policeRandom <= .8){
           policeRandom = ((Math.ceil(Math.random()*100))/100);
         }
         criminalRandom = ((Math.ceil(Math.random()*100))/100);
