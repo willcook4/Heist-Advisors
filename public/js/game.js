@@ -11,6 +11,10 @@ var currentMarker;
 var routeStats;
 var winner;
 var isAnimating = false;
+var isFinished = false;
+var criminalsCurrentCoords;
+var policeCurrentCoords;
+var coordsDifference;
 
 function initMap() {
   console.log("initializing");
@@ -53,7 +57,7 @@ function initMap() {
         strokeColor: "#FFFFFF",
         strokeOpacity: .4,
         strokeWeight: 5,
-        zIndex: 20
+        zIndex: 10
       }
     });
     policeDirectionsDisplay.setMap(map);
@@ -193,8 +197,24 @@ function initMap() {
       }
     });
   }
+
+  function resetVariables() {
+    criminalsRouteSetupInfo = undefined;
+    policeRouteSetupInfo = undefined;
+    currentMarker = undefined;
+    routeStats = undefined;
+    winner = undefined;
+    isAnimating = false;
+    isFinished = false;
+    criminalsCurrentCoords = undefined;
+    policeCurrentCoords = undefined;
+    coordsDifference = undefined;
+
+  }
+
   function heistMarkerListener(marker) {
     marker.addListener('click', function(event) {
+      resetVariables();
       clearWinscreenUi();
       if (currentMarker !== undefined) {
         currentMarker.setAnimation(null);  
@@ -287,22 +307,41 @@ function initMap() {
       editable: false,
       map: map
     });
-    var pathCoordsLength = pathCoords.length
     marker = new google.maps.Marker({map:map, icon:image});
-    for (i = 0; i < pathCoordsLength; i++) {       
-      setTimeout(function(coords, index, pathCoordsLength, image, isCriminal) {
-        route.getPath().push(coords);
-        moveMarker(map, marker, coords);
-        if (isCriminal) {
-          map.panTo(coords);
-        }
-        if (index === pathCoordsLength - 1 && !winner) {
-          winner = true;
-          updateWinscreenUi();
-        }
-      }, interval * i, pathCoords[i], i, pathCoordsLength, image, isCriminal);
-
+    
+    var index = 0;
+    function looping(coords, index, pathCoords, image, isCriminal) {
+      if (index < pathCoords.length && !isFinished) {
+        setTimeout(function(coords, index, pathCoords, image, isCriminal) {
+          if (isCriminal) {
+            criminalsCurrentCoords = coords;
+            map.panTo(coords);            
+          } else {
+            policeCurrentCoords = coords;
+          }
+          if (!!policeCurrentCoords && !!criminalsCurrentCoords && !isFinished) {
+            coordsDifference = Math.abs((Math.abs(criminalsCurrentCoords.lat()) + Math.abs(criminalsCurrentCoords.lng())) - (Math.abs(policeCurrentCoords.lat()) + Math.abs(policeCurrentCoords.lng())))
+            if ( coordsDifference < 0.00001 ) {
+              winner = "police";
+              $(".win-or-lose").html("<p>YOU HAVE BEEN CAUGHT ON ROUTE</p>");
+              isAnimating = false;
+              isFinished = true;
+            } else {
+              route.getPath().push(coords);
+              moveMarker(map, marker, coords);
+            }
+          }
+          if (index === pathCoords.length - 1 && !winner) {
+            updateWinscreenUi();
+          }
+          index++;
+          if(!isFinished) {
+            looping(pathCoords[index], index, pathCoords, image, isCriminal);  
+          }
+        }, interval, coords, index, pathCoords, image, isCriminal)
+      }
     }
+    looping(pathCoords[index], index, pathCoords, image, isCriminal);
   }
 
   function gameLogic() {
@@ -394,6 +433,7 @@ function initMap() {
     var policeTime = routeStats.policeTime;
     var policeSeconds = routeStats.policeSeconds;
     isAnimating = false;
+    isFinished = true;
 
     $(".criminal-time-tag").html("<p>You make it to the airport in " + (Math.floor(criminalTime*60)) + " minutes and " + criminalSeconds + " seconds!</p>");
     
