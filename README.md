@@ -1,6 +1,8 @@
 # Heist Advisors
 Heist Advisors was a group project that was developed over a week. The site was designed to be a fun twist on how current technology could be used for good and not so good.
 
+
+
 ###[Try the site here...](http://heist-advisors.herokuapp.com/)
 ####The site was developed by:
 
@@ -47,6 +49,19 @@ The nearest police station to the heist location is found through another call v
 Animation is done by following the route that is returned from the directions request.
 
 Game logic is improved with the Police having a faster travel time ('optimistic' traffic and increased speed to reflect their lights and sirens.
+
+###Screenshots###
+Intro:
+![Intro](https://s3-eu-west-1.amazonaws.com/heistapp/intro.png)
+
+####Selecting a heist location:####
+![Selecting](https://s3-eu-west-1.amazonaws.com/heistapp/1.png)
+####Police station located (notice the possible routes):####
+![Selecting](https://s3-eu-west-1.amazonaws.com/heistapp/2.png)
+####The animated chase in action:####
+![Selecting](https://s3-eu-west-1.amazonaws.com/heistapp/3.png)
+####Sometimes you might get away, not this time!####
+![Selecting](https://s3-eu-west-1.amazonaws.com/heistapp/4.png)
 
 ###Disclaimer###
 Heist Advisor is only and a game and should be treated as such. Heist Advisor is in no way meant to be taken seriously or used to plan any sort of illegal action. We, the developers of Heist Advisor, take no responsibility for any lost items, stolen items, damaged goods, soul loss, or any other damage to personal or buisness items.   
