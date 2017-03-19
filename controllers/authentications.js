@@ -3,7 +3,7 @@ var jwt = require('jsonwebtoken');
 var secret = require('../config/tokens').secret;
 
 function keys(req, res) {
-  console.log('Now handing over keys...');
+  // console.log('Now handing over keys...');
   return res.status(200).json({
     keys: {
       'client_id': process.env.LUFTHANSA_API_CLIENT_ID,
