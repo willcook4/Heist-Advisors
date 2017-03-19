@@ -1,9 +1,7 @@
-
-
 @font-face {
   font-family: pricedown;
   src: url('../fonts/pricedown.ttf');
-} 
+}
 
 body{
   background-color: #020202;
@@ -193,13 +191,13 @@ video.background{
     margin: 20px 0;
     background-color: #3F3F3F;
     &:hover{
-      background-color: #4F4F4F;   
+      background-color: #4F4F4F;
     }
   }
 }
 
 .center-form{
-  margin: 20px 0 0 0; 
+  margin: 20px 0 0 0;
   @media screen and (min-width: 740px) {
     left: 50%;
     width:420px;

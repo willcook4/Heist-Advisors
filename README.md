@@ -32,7 +32,8 @@ Simply put, you select a city in the world, possible heist locations are present
 * Heroku - Deployment
 * git and gitHub - Version control
 * Google Maps API including, Places Library - API
-* SITA Airports- API
+* <del>SITA Airports- API</del>
+* March 2017 - Due to change in business model. The API was changed to Lufthansa API. 
 * JavaScript
 * SASS
 * [Reset CSS (thanks to Eric)](http://meyerweb.com/eric/tools/css/reset/)
@@ -64,4 +65,8 @@ Intro:
 ![Selecting](https://s3-eu-west-1.amazonaws.com/heistapp/4.png)
 
 ###Disclaimer###
-Heist Advisor is only and a game and should be treated as such. Heist Advisor is in no way meant to be taken seriously or used to plan any sort of illegal action. We, the developers of Heist Advisor, take no responsibility for any lost items, stolen items, damaged goods, soul loss, or any other damage to personal or business items.   
+Heist Advisor is only and a game and should be treated as such. Heist Advisor is in no way meant to be taken seriously or used to plan any sort of illegal action. We, the developers of Heist Advisor, take no responsibility for any lost items, stolen items, damaged goods, soul loss, or any other damage to personal or business items.
+
+### UPDATE 2017
+Due to the SITA Airports API changing to a paid business model the code was changed to use the Lufthansa API for getting the nearest airport. Although this required a change in code as we first need to request a token to use their service.
+The code was also put through ESLint and tidyed up. Changes were made to the loading of scripts to prevent XMLHttpRequests warnings in the console. 
